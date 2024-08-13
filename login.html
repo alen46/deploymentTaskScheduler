@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/login.css">
+    <title>Deployment Task Scheduler</title>
+</head>
+
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <a href="#" class="nav-logo">Deployment Task Scheduler</a>
+            <ul class="nav-menu">
+                <li class="nav-item"><a class= "header__link" href="#">Predict</a></li>
+                <li class="nav-item"><a class= "header__link" href="#">About</a></li>
+                <li class="nav-item"><a class= "header__link" href="#">Contact</a></li>
+                <li class="nav-item"><a class= "header__link" href="#">View Feedback</a></li>
+              </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+    <div class="container" >
+        <h1>Login</h1>
+        <form method="POST" action="">
+            <input type="text" name="username" placeholder="Username">
+            <input type="password" name="password" placeholder="Password">
+            <input type="submit" value="Login">
+        </form>
+        <br>
+        <a href="register.html">Don't have an account? Register</a>
+    </div>
+</body>
+<script>
+    $(document).ready(function(){
+        $(".hamburger").click(function(){
+            $(this).toggleClass("active");
+            $(".nav-menu").toggleClass("active");
+        });
+    
+            $(".nav-link").click(function(){
+            $(".hamburger").removeClass("active");
+            $(".nav-menu").removeClass("active");
+        });  
+    });
+</script>
+</html>
