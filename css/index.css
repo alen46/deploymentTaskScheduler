@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,500;1,400&display=swap');
 body{
     font-family: Georgia, serif;
     background-image: url('../img/blue.jpg');
@@ -246,6 +245,9 @@ width: 100%;
 height: 100%;
 z-index: 0;
 }
+.image-logo {
+    display: none;
+}
 
 .cssbuttons-io::before {
 content: "";
@@ -290,7 +292,14 @@ margin: 1rem;
 .header__btn-2{
 display: none;
 }
-
+.text-logo {
+    display: none;
+}
+.image-logo {
+    display: flex;
+    width: 50px; /* Adjust as needed */
+    height: auto; /* Maintain aspect ratio */
+}
 .hamburger {
 display: block;
 cursor: pointer;

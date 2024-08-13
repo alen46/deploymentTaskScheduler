@@ -213,6 +213,9 @@ hr{
     padding-bottom: 20px;
     border-top: 10px;
 }
+.image-logo {
+    display: none;
+}
 .card-header {
     padding: 1rem 1.35rem;
     margin-bottom: 0;
@@ -258,6 +261,14 @@ text-align: center;
 transition: 0.3s;
 box-shadow:
     0 10px 27px rgba(0, 0, 0, 0.05);
+}
+.text-logo {
+    display: none;
+}
+.image-logo {
+    display: flex;
+    width: 50px; /* Adjust as needed */
+    height: auto; /* Maintain aspect ratio */
 }
 #header {
     height: 40px; /* Smaller header height for small devices */

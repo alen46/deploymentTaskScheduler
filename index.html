@@ -12,7 +12,10 @@
 <body>
     <header class="header">
         <nav class="navbar">
-            <a href="#" class="nav-logo">Deployment Task Scheduler</a>
+            <a href="#" class="nav-logo">
+                <span class="text-logo">Deployment Task Scheduler</span>
+                <img src="img/d.png" alt="Logo" class="image-logo" >
+            </a>
             <ul class="nav-menu">
                 <li class="nav-item"><a class= "header__link" href="#">Predict</a></li>
                 <li class="nav-item"><a class= "header__link" href="#">About</a></li>
@@ -27,10 +30,10 @@
             </div>
         </nav>
     </header>
-    
 </body>
 <script>
 $(document).ready(function(){
+
     $(".hamburger").click(function(){
         $(this).toggleClass("active");
         $(".nav-menu").toggleClass("active");
@@ -40,15 +43,36 @@ $(document).ready(function(){
         $(".hamburger").removeClass("active");
         $(".nav-menu").removeClass("active");
     });
+
     $.ajax({
             url: 'main.php?function=checklogin',
             type: 'GET',
             dataType: 'json',
             success: function(response) {
-                if(response.response == "login"){
-                    $("#login").text("Login").attr("href", "login.html");
+                if(response.response == "logout"){
+                    $("#login").text("Logout");
+                    $("#login").off('click').click(function() {
+                        $.ajax({
+                            url: 'main.php?function=logout',
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function(response) {
+                                if(response.response == "login"){
+                                    alert(response.response)
+                                    location.reload();    
+                                }else{
+                                    $("#login").text("Login").attr("href", "login.html");
+                                }
+                                
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error fetching data:', error);
+                            }
+                        });
+                    });     
+
                 }else{
-                    $("#login").text("Logout").attr("href", "logout.php");
+                    $("#login").text("Login").attr("href", "login.html");
                 }
                 
             },
@@ -56,6 +80,14 @@ $(document).ready(function(){
                 console.error('Error fetching data:', error);
             }
         });
+
+        $('#myButton').click(function() {
+        // Action on first click
+        alert("First click action");
+
+        // Change the click event handler
+        
+    });
     
 });
 </script>
