@@ -8,6 +8,7 @@
     <title>Deployment Task Scheduler</title>
     <script src="js/jquery-3.7.1.min.js"></script>
     <script src="js/validation.js"></script>
+    <script src="js/register.js"></script>
     <link rel="stylesheet" href="css/register.css">
 </head>
 <body>
@@ -29,6 +30,7 @@
             </nav>
         </header>
     </div>
+        <form onsubmit="get3()" id="addform">
             <div class="container">
                 <div class="card mb-4">
                     <div class="card-body">
@@ -39,9 +41,9 @@
                                 <small id="namecheck"  style="color: red;"> Username is missing </small>
                             </div>
                             <div class="col-md-6">
-                                <label class="small mb-1" for="deptsel">Type</label>
+                                <label class="small mb-1" for="typesel">Type</label>
                                 <select class="form-control" id="typesel">
-                                    <option value="" selected disabled>Usertype</option>
+                                    <option value="" selected disabled>Select Usertype</option>
                                 </select>
                             </div>
                             </div>
@@ -61,12 +63,12 @@
                                 <div class="col-md-6">
                                     <label class="small mb-1" for="password1">Password</label>
                                     <input required class="form-control" id="password1" type="password" placeholder="Enter Password">
-                                    <small id="passwordvalid" class="form-text text-muted invalid-feedback" ><p style="color: red;">Enter a valid Password</p> </small>
+                                    <small id="passwordvalid" style="color: red;" >Enter a valid Password </small>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="small mb-1" for="password2">Retype Password</label>
                                     <input required class="form-control" id="password2" type="password" placeholder="Retype Password">
-                                    <small id="passwordvalid2" class="form-text text-muted invalid-feedback" ><p style="color: red;">Enter a valid Password</p> </small>
+                                    <small id="passwordvalid2" style="color: red;" >Enter a valid Password</small>
                                 </div>
                             </div>
                             <input class="btn btn-primary" type="submit" id="subbtn" value="save">

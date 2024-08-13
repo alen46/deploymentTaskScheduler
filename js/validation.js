@@ -75,10 +75,8 @@ $(document).ready(function () {
         }
         if (passwordValue.length < 8 || passwordValue.length > 25) {
             $("#passwordvalid").show();
-            $("#passwordvalid").html(
-                "**length of your password must be between 8 and 25"
-            );
-            $("#passwordvalid").css("color", "red");
+            $("#passwordvalid").text( "**length of your password must be between 8 and 25" );
+            //$("#passwordvalid").css("color", "red");
             passwordError = false;
             return false;
         } else {

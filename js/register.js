@@ -1,4 +1,5 @@
 $(document).ready(function(){
+
     $.ajax({
             url: 'main.php?function=fetchoptions',
             type: 'GET',
@@ -16,28 +17,21 @@ $(document).ready(function(){
                 console.error('Error fetching data:', error);
             }
     });
+
     $('#addform').on('submit', function(e) {
     {
-        validateUsername();
-        email.dispatchEvent(new Event('blur'));
         e.preventDefault(e); 
         let formData = new FormData();
         formData.append('name', $("#name").val());
         formData.append('email', $("#email").val());
         formData.append('phone', $("#phone").val());
-        formData.append('password', $("#password").val());
-        formData.append('usertype', $("#tyesel").val());
-        formData.append('function',"adduser")
-
-
-        // Append the file
-        let fileInput = $('#imageUpload')[0].files[0];
-        if (fileInput) {
-            formData.append('image', fileInput);
-        }
+        formData.append('password', $("#password1").val());
+        formData.append('usertype', $("#typesel").val());
+        formData.append('function',"adduser");
+        console.log(formData);
         $.ajax({
             type: "POST",
-            url: "emp.php",
+            url: "main.php",
             data: formData,
             dataType: "json",
             processData: false, 

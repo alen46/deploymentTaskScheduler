@@ -110,6 +110,8 @@ li {
     align-items: center;
     padding-left: 20px; 
     padding-right: 20px; 
+    position: sticky;
+    top: 0;
 }
 
 .hamburger {
@@ -234,7 +236,14 @@ hr{
     border-radius: 0.35rem;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
-
+form {
+    margin-top: 0px;
+    width: -webkit-fill-available;
+}
+button, select {
+    text-transform: none;
+    margin: 8px;
+}
 @media only screen and (max-width: 768px) {
 .nav-menu {
 position: fixed;
