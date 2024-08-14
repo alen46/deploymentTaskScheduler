@@ -32,6 +32,7 @@ body::before {
     overflow: auto;
     line-height: .8cm;
     z-index: 1; 
+    padding: 0;
     float: none;
     text-align: justify;
 }
@@ -41,7 +42,11 @@ body::before {
     float: none;
     margin-top: 100px;
     line-height: .8cm;
+    
 
+}
+.mb-4 {
+   margin-bottom: 0rem ;
 }
 .x{
     width: 95%;

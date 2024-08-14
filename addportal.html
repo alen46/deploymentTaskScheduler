@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/addportal.css">
     <script src="js/jquery-3.7.1.min.js"></script>
     <title>Deployment Task Scheduler</title>
 </head>
@@ -30,6 +30,47 @@
             </div>
         </nav>
     </header>
+    <div class="form-container">
+        <h1>Add Portal</h1>
+        <form action="/submit_form" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="portal-name">Portal Name</label>
+                <input type="text" id="portal-name" name="portal_name" placeholder="Enter portal name" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="portal-url">Portal URL</label>
+                    <input type="url" id="portal-url" name="portal_url" placeholder="Enter portal URL" required>
+                </div>
+    
+                <div class="form-group">
+                    <label for="portal-version">Portal Version</label>
+                    <input type="text" id="portal-version" name="portal_version" placeholder="Enter portal version" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="portal-features">Portal Features</label>
+                <textarea id="portal-features" name="portal_features" placeholder="Enter portal features" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="deployment-date">Deployment Date</label>
+                <input type="date" id="deployment-date" name="deployment_date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="number-of-days">Number of Days</label>
+                <input type="number" id="number-of-days" name="number_of_days" placeholder="Enter number of days" required>
+            </div>
+
+            <div class="form-group">
+                <label for="deployment-plan">Deployment Plan</label>
+                <input type="file" id="deployment-plan" name="deployment_plan" required>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit</button>
+        </form>
+    </div>
 </body>
 <script>
 $(document).ready(function(){
