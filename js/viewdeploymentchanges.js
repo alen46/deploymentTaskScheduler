@@ -22,6 +22,7 @@ $(document).ready(function(){
                 $("#deployment_date").val(data.deployment_date);
                 $("#days").val(data.required_days);
                 $("#username").val(data.username);
+                $("#deploymentid").val(data.deployment_id);
                 $("#change_date").val(data.new_date);
                 $("#downloadbtn").click(function(event) {
                     event.preventDefault();
@@ -43,13 +44,14 @@ $(document).ready(function(){
     });
 });
 
-
-/*
-    $('#changeschedule').on('submit', function(e) {
+    $('#acceptbtn').on('click', function(e) {
     {
-        e.preventDefault(e); 
-        let formData = new FormData(this);
-        formData.append('function',"changeschedule");
+        e.preventDefault(e);
+        let formData = {
+            'status':"Accepted",
+            'function':"managechange",
+            'deployment_id':$("#deployment_id").val()
+        };
         console.log(formData);
         $.ajax({
             type: "POST",
@@ -61,7 +63,7 @@ $(document).ready(function(){
             success: function(response) { 
                 window.alert(response.response); 
                 console.log(response);
-                location.reload();
+               // location.reload();
             },
             error: function(xhr, textStatus, errorThrown){
                 alert("An error occurred: " + xhr.status + " " + xhr.statusText);
@@ -72,4 +74,3 @@ $(document).ready(function(){
     }
 
 }); 
-*/

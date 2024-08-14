@@ -11,8 +11,8 @@
 <body>
     <div class="form-container">
         <h1>Portal Information Form</h1>
-        <p>Please fill out the following details for the portal.</p>
         <form>
+            <input type="hidden" id="deployment_id" name="deployment_id">
             <div class="form-row">
                 <div class="form-group">
                     <label for="portal_url">Portal URL</label>
@@ -90,7 +90,8 @@
             
 
             <div class="form-group">
-                <button type="submit">Submit</button>
+                <button style="background-color: green;" id="acceptbtn">Accept</button>
+                <button style="background-color: red;" id="rejectbtn">Reject</button>
             </div>
         </form>
     </div>
