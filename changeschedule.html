@@ -34,7 +34,7 @@
     </header>
     <div class="form-container">
         <h1>Change Deployment Schedule</h1>
-        <form   id="addportal" onsubmit="addportal()" enctype="multipart/form-data">
+        <form   id="changeschedule" onsubmit="addportal()" enctype="multipart/form-data">
             <div class="form-row">
                 <div class="form-group">
                     <label  for="portal_url">Portal URL</label>
@@ -42,7 +42,7 @@
                         <option value="" selected disabled>Select Portal URL</option>
                     </select>
                 </div>
-
+                <input type="hidden" name="deployment_id" id="deployment_id">
                 <div class="form-group">
                     <label for="portal_name">Portal Name</label>
                     <input type="text" id="portal_name" name="portal_name" placeholder="Enter portal name" readonly>
@@ -65,7 +65,7 @@
             </div>
             <div class="form-group">
                 <label for="change_note">Change  Note</label>
-                <textarea id="change_note" name="change_note" placeholder="Enter portal features" required></textarea>
+                <textarea id="change_note" name="change_note" placeholder="Enter change reason" required></textarea>
             </div>
             <input type="submit" class="submit-btn" value="Save">
         </form>

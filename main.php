@@ -35,13 +35,24 @@ class Deployment{
 
     public function fetchportal(){
         require("conn.php");
-        $sql = "SELECT pid,portalname FROM portal;";
+        $sql = "SELECT pid,purl FROM portal;";
         $stmt = $conn->query($sql);
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $options[] = $row;
         }
         $conn = null;
         echo json_encode($options);
+    }
+
+    public function fetchscheduledetails(){
+        require("conn.php");
+        $sql = "SELECT portalname,deployment_date,deployment_version,deployment_id FROM deployment INNER JOIN portal on deployment.portal_id = portal.pid where pid = :pid";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(":pid", $_GET['id']);
+        $stmt->execute();
+        $details = $stmt->fetch(PDO::FETCH_ASSOC);
+            echo json_encode($details);
+        $conn = null;
     }
 
     public function adduser(){
@@ -92,6 +103,7 @@ class Deployment{
                     session_start();
                     $_SESSION['login'] = true;
                     $_SESSION['email'] = $email;
+                    $_SESSION['userid'] = $user['userid'];
                     $welcome = "Welcome ".$user['username'];
                     echo json_encode(array("response" =>$welcome));
                 } else {
@@ -172,6 +184,37 @@ class Deployment{
                         echo json_encode(array("response"=>"file error"));
                     }
                 }
+            }
+            else{
+                echo json_encode(array("response" =>"No Data Recieved"));
+            }
+            $conn = null;
+        } catch (PDOException $e) {
+            echo json_encode(array("response" => "Database error: " . $e->getMessage()));
+        } catch (Exception $e) {
+            echo json_encode(array("response" => "General error: " . $e->getMessage()));
+        } finally {
+            $conn = null;
+        }
+    }
+
+    public function changeschedule() {
+        session_start();
+        require("conn.php");
+        try {
+            header('Content-Type: application/json');
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $deployment_id = $_POST['deployment_id'];
+                $new_date = $_POST['new_date'];
+                $change_note = $_POST['change_note'];
+                $userid = $_SESSION['userid'];
+                $sql = $conn->prepare("INSERT INTO schhedulechange(deployment_id, new_date, user_id, user_note) VALUES (:deployment_id,:new_date,:userid,:change_note)");
+                $sql->bindParam(':deployment_id',$deployment_id);
+                $sql->bindParam(':new_date',$new_date);
+                $sql->bindParam(':userid',$userid);
+                $sql->bindParam(':change_note',$change_note);
+                $sql->execute();
+                echo json_encode(array("response" =>"Schedule change added successfully"));
             }
             else{
                 echo json_encode(array("response" =>"No Data Recieved"));

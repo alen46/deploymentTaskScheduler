@@ -9,32 +9,43 @@ $(document).ready(function(){
             $.each(data, function(index, item) {
                 $select.append($('<option>', {
                     value: item.pid,
-                    text: item.portalname
+                    text: item.purl
                 }));
             });
         },
         error: function(xhr, status, error) {
             console.error('Error fetching data:', error);
         }
+    });
+
+    $('#portal_url').change(function() {
+        var selectedValue = $(this).val();
+        console.log("Selected Portal URL ID: " + selectedValue);
+        $.ajax({
+            url: `main.php?function=fetchscheduledetails&id=${selectedValue}`,
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                console.log(data);
+                $("#portal_name").val(data.portalname);
+                $("#portal_version").val(data.deployment_version);
+                $("#existing_date").val(data.deployment_date);
+                $("#deployment_id").val(data.deployment_id);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching data:', error);
+            }
+        
+    });
 });
 
 
-/*
-    $('#addportal').on('submit', function(e) {
+
+    $('#changeschedule').on('submit', function(e) {
     {
         e.preventDefault(e); 
         let formData = new FormData(this);
-        formData.append('portal_url', $("#portal_url").val());
-        formData.append('portal_version', $("#portal_version").val());
-        formData.append('deployment_date', $("#deployment_date").val());
-        formData.append('num_days', $("#num_days").val());
-        formData.append('deployment_note', $("#deployment_note").val());
-        formData.append('function',"adddeployment");
-        let fileInput = $('#deployment_plan')[0].files[0];
-            if (fileInput) {
-                formData.append('deployment_plan', fileInput);
-            } 
-        formData.append('function',"adddeployment");
+        formData.append('function',"changeschedule");
         console.log(formData);
         $.ajax({
             type: "POST",
@@ -56,5 +67,5 @@ $(document).ready(function(){
         return false;
     }
 
-}); */
+}); 
 });

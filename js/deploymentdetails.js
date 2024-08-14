@@ -22,16 +22,6 @@ $(document).ready(function(){
     {
         e.preventDefault(e); 
         let formData = new FormData(this);
-        /*formData.append('portal_url', $("#portal_url").val());
-        formData.append('portal_version', $("#portal_version").val());
-        formData.append('deployment_date', $("#deployment_date").val());
-        formData.append('num_days', $("#num_days").val());
-        formData.append('deployment_note', $("#deployment_note").val());
-        formData.append('function',"adddeployment");
-        let fileInput = $('#deployment_plan')[0].files[0];
-            if (fileInput) {
-                formData.append('deployment_plan', fileInput);
-            } */
         formData.append('function',"adddeployment");
         console.log(formData);
         $.ajax({
