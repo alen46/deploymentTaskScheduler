@@ -1,14 +1,14 @@
 $(document).ready(function(){
 
     $.ajax({
-        url: 'main.php?function=fetchportal',
+        url: 'main.php?function=fetchportal&from=changedeployment',
         type: 'GET',
         dataType: 'json',
         success: function(data) {
             var $select = $('#portal_url');
             $.each(data, function(index, item) {
                 $select.append($('<option>', {
-                    value: item.pid,
+                    value: item.portal_id,
                     text: item.purl
                 }));
             });

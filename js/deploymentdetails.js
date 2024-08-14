@@ -1,7 +1,7 @@
 $(document).ready(function(){
 
     $.ajax({
-        url: 'main.php?function=fetchportal',
+        url: 'main.php?function=fetchportal&from=deploymentdetails',
         type: 'GET',
         dataType: 'json',
         success: function(data) {

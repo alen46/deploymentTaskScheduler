@@ -35,7 +35,11 @@ class Deployment{
 
     public function fetchportal(){
         require("conn.php");
-        $sql = "SELECT pid,purl FROM portal;";
+        if($_GET['from'] == 'changedeployment'){
+            $sql = "SELECT portal_id, portal.purl FROM `deployment` INNER JOIN portal on portal.pid = deployment.portal_id WHERE deployment_id NOT IN(SELECT deployment_id FROM schhedulechange);";
+        }else if($_GET['from'] == 'deploymentdetails'){
+            $sql = "SELECT pid, portal.purl FROM portal WHERE pid NOT IN (SELECT deployment.portal_id from deployment)";
+        }
         $stmt = $conn->query($sql);
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $options[] = $row;
