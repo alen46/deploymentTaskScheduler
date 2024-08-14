@@ -9,7 +9,7 @@ $(document).ready(function(){
             $.each(data, function(index, item) {
                 $select.append($('<option>', {
                     value: item.pid,
-                    text: item.portalname
+                    text: item.purl
                 }));
             });
         },

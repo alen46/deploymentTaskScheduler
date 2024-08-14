@@ -1,0 +1,75 @@
+$(document).ready(function(){
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+        var url = getQueryParam('data');
+
+        $.ajax({
+            url: `main.php?function=viewschedulechange&purl=${url}`,
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                console.log(data);
+                $("#portal_url").val(data.purl);
+                $("#portal_name").val(data.portalname);
+                $("#user_note").val(data.user_note);
+                $("#existing_date").val(data.deployment_date);
+                $("#current_version").val(data.version);
+                $("#deployment_version").val(data.deployment_version);
+                $("#portal_features").val(data.pfeatures);
+                $("#new_features").val(data.deployment_note);
+                $("#deployment_date").val(data.deployment_date);
+                $("#days").val(data.required_days);
+                $("#username").val(data.username);
+                $("#change_date").val(data.new_date);
+                $("#downloadbtn").click(function(event) {
+                    event.preventDefault();
+                    var fileUrl = data.deployment_plan;
+                    var fileName = fileUrl.split('/').pop();
+        
+                    var a = document.createElement('a');
+                    a.href = fileUrl;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching data:', error);
+            }
+        
+    });
+});
+
+
+/*
+    $('#changeschedule').on('submit', function(e) {
+    {
+        e.preventDefault(e); 
+        let formData = new FormData(this);
+        formData.append('function',"changeschedule");
+        console.log(formData);
+        $.ajax({
+            type: "POST",
+            url: "main.php",
+            data: formData,
+            dataType: "json",
+            processData: false, 
+            contentType: false, 
+            success: function(response) { 
+                window.alert(response.response); 
+                console.log(response);
+                location.reload();
+            },
+            error: function(xhr, textStatus, errorThrown){
+                alert("An error occurred: " + xhr.status + " " + xhr.statusText);
+                console.error("Error:", xhr, textStatus, errorThrown);
+            }
+        });
+        return false;
+    }
+
+}); 
+*/

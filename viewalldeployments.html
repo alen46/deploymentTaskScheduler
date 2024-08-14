@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="js/jquery-3.7.1.min.js"></script>
+<link rel="stylesheet" href="css/datatables.css" />
+<script src="js/datatables.js"></script>
+<style>
+    body{margin-top:20px;
+    background-color:#f2f6fc;
+    color:#69707a;
+    }
+</style>
+</head>
+<body>
+    <div class="container-xl px-4 mt-4">
+    <div style=" padding: 25px; padding-left: 10px; padding-right: 10px;">
+        <table id="test" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Portal URL</th>
+                    <th>Portal Name</th>
+                    <th>Deployment Date</th>
+                    <th>User Name</th>
+                    <th>Change Date</th>
+                </tr>
+            </thead>
+        </table>
+    </div>   
+</div>
+</body>
+<script>
+     $(document).ready(()=>{
+            let table = $('#test').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "ajax": {
+                    "url": "main.php?function=datatable",
+                    "type": "GET",
+                    "datatype": "json",
+                    "dataSrc": ""
+                },
+                "columns": [
+                    {"data": "purl"},
+                    {"data": "portalname"},
+                    {"data": "deployment_date"},
+                    {"data": "username"},
+                    {"data": "new_date"}
+                ]
+            });
+
+            $('#test tbody').on('click', 'tr', function () {
+            let data = table.row(this).data();
+            console.log(data.name);
+            window.location.href = "viewschedulechange.html?data=" +data.purl;
+        });
+    });
+</script>
+</html>

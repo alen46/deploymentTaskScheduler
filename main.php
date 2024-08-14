@@ -229,6 +229,53 @@ class Deployment{
         }
     }
 
+
+    public function datatable(){
+        require('conn.php');
+        try {
+            $sql = "SELECT portal.purl, portal.portalname,deployment.deployment_date, users.username, schhedulechange.new_date FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN schhedulechange on schhedulechange.deployment_id = deployment.deployment_id INNER JOIN users on schhedulechange.user_id = users.userid;";
+        
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+        
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+            if (!empty($data)) {
+                header('Content-Type: application/json');
+                echo json_encode($data);
+            } else {
+                echo json_encode(array("message" => "No data found"));
+            }
+        
+        } catch(PDOException $e) {
+            echo "Connection failed: " . $e->getMessage();
+        }
+        $conn = null;
+    }
+
+
+    public function viewschedulechange(){
+        require("conn.php");
+        $sql = "SELECT deployment_version,deployment_date, deployment_note, required_days,portalname, purl, version, pfeatures, new_date, user_note, username, deployment_plan FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN schhedulechange on schhedulechange.deployment_id = deployment.deployment_id INNER JOIN users on schhedulechange.user_id = users.userid where purl = :purl";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(":purl", $_GET['purl']);
+        $stmt->execute();
+        $details = $stmt->fetch(PDO::FETCH_ASSOC);
+            echo json_encode($details);
+        $conn = null;
+    }
+
+    public function managechange(){
+        require("conn.php");
+        $sql = "UPDATE schhedulechange SET change_status= :status WHERE schhedulechange.deployment_id  :deployment_id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(":status", $_POST['status']);
+        $stmt->bindParam(":deployment_id", $_POST['deployment_id']);
+        $stmt->execute();
+        echo json_encode(array("response" => "Success"));
+        $conn = null;
+    }
+
 }
 
 try{

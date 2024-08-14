@@ -438,7 +438,6 @@ p {
 
 .form-group textarea {
     height: 80px;
-    resize: none;
 }
 
 .form-group input[type="file"] {

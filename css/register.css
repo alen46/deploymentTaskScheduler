@@ -80,6 +80,16 @@ input[type="submit"] {
     transition: background-color 0.3s ease;
 }
 
+input[type="reset"]{
+    background-color: #69707a;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
 input[type="submit"]:hover {
     background-color: #0056b3;
 }
