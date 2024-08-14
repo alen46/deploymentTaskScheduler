@@ -428,7 +428,7 @@ p {
 
 .form-group input,
 .form-group textarea {
-    width: 90%;
+    width: 92%;
     padding: 10px;
     border: 1px solid #cccccc;
     border-radius: 5px;
@@ -445,6 +445,7 @@ p {
     border: 1px dashed #cccccc;
     padding: 20px;
     cursor: pointer;
+    width: 90%;
 }
 
 .form-group input[type="file"]::file-selector-button {
@@ -484,4 +485,38 @@ transform: translateY(8px) rotate(45deg);
 .hamburger.active .bar:nth-child(3) {
 -webkit-transform: translateY(-8px) rotate(-45deg);
 transform: translateY(-8px) rotate(-45deg);
+}
+select {
+    width: 95%;
+    padding: 10px;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    appearance: none; /* Remove default arrow */
+    -webkit-appearance: none; /* Remove default arrow in Safari */
+    -moz-appearance: none; /* Remove default arrow in Firefox */
+}
+
+/* Adding a custom arrow icon */
+select::after {
+    content: '\25BC'; /* Downward arrow icon */
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+/* Container for select box */
+.select-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+/* Style for the select box on focus */
+select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }

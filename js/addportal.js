@@ -1,11 +1,14 @@
 $(document).ready(function(){
-  
-    $('#loginform').on('submit', function(e) {
+
+    $('#addportal').on('submit', function(e) {
+    {
         e.preventDefault(e); 
         let formData = new FormData();
-        formData.append('email', $("#email").val());
-        formData.append('password', $("#password").val());
-        formData.append('function',"login");
+        formData.append('portal_name', $("#portal_name").val());
+        formData.append('portal_url', $("#portal_url").val());
+        formData.append('portal_version', $("#portal_version").val());
+        formData.append('portal_features', $("#portal_features").val());
+        formData.append('function',"addportal");
         console.log(formData);
         $.ajax({
             type: "POST",
@@ -17,7 +20,7 @@ $(document).ready(function(){
             success: function(response) { 
                 window.alert(response.response); 
                 console.log(response);
-                window.location.href = 'index.html';
+                location.reload();
             },
             error: function(xhr, textStatus, errorThrown){
                 alert("An error occurred: " + xhr.status + " " + xhr.statusText);
@@ -26,5 +29,6 @@ $(document).ready(function(){
         });
         return false;
     }
-);
+
+});
 });
