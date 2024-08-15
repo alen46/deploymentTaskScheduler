@@ -4,6 +4,7 @@
 <script src="js/jquery-3.7.1.min.js"></script>
 <link rel="stylesheet" href="css/datatables.css" />
 <script src="js/datatables.js"></script>
+<script src="js/navbar.js"></script>
 <link rel="stylesheet" href="css/index.css">
 <style>
     body{margin-top:20px;
@@ -21,6 +22,7 @@
                 <img src="img/d.png" alt="Logo" class="image-logo" >
             </a>
             <ul class="nav-menu">
+                <li class="nav-item"><p id="hello"></p></li>
                 <li class="nav-item" ><a class= "header__link" href="" id="login">Logout</a></li>
               </ul>
             <div class="hamburger">
@@ -39,7 +41,7 @@
                     <th>Portal Name</th>
                     <th>Deployment Date</th>
                     <th>User Name</th>
-                    <th>Change Date</th>
+                    <th>Required Days</th>
                 </tr>
             </thead>
         </table>
@@ -48,7 +50,6 @@
 </body>
 <script>
      $(document).ready(()=>{
-
         $.ajax({
             url: 'main.php?function=checklogin',
             type: 'GET',
@@ -95,7 +96,7 @@
                 "ordering": true,
                 "info": true,
                 "ajax": {
-                    "url": "main.php?function=datatable",
+                    "url": "main.php?function=deploymentstable",
                     "type": "GET",
                     "datatype": "json",
                     "dataSrc": ""
@@ -105,14 +106,14 @@
                     {"data": "portalname"},
                     {"data": "deployment_date"},
                     {"data": "username"},
-                    {"data": "new_date"}
+                    {"data": "required_days"}
                 ]
             });
 
             $('#test tbody').on('click', 'tr', function () {
             let data = table.row(this).data();
             console.log(data.name);
-            window.location.href = "viewschedulechange.html?data=" +data.purl;
+            window.location.href = "portaldeploymentdetails.html?data=" +data.purl;
         });
     });
 </script>

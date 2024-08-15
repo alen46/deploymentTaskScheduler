@@ -172,6 +172,7 @@ label {
     font-size: 14px;
     margin-bottom: 5px;
     color: #333;
+    align-self: flex-start;
 }
 
 input[type="text"],

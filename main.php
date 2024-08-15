@@ -6,10 +6,28 @@ class Deployment{
     public function checklogin(){
         session_start();
         if(isset($_SESSION['login'])) {
-            echo json_encode(array("response" =>"logout"));
-        }else{
-            echo json_encode(array("response"=> "login"));
+            $response = array(
+                "response" => "logout",
+                "type" => isset($_SESSION['type']) ? $_SESSION['type'] : null // Include the session 'type' if it exists
+            );
+        } else {
+            $response = array(
+                "response" => "login",
+                "type" => null // Set type to null if not logged in
+            );
         }
+        echo json_encode($response);
+    }
+
+    public function retdate(){
+        require("conn.php");
+        $sql = "SELECT MIN(deployment_date) as mindate,required_days FROM `deployment`;";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+            echo json_encode($data);
+            
+        $conn = null;
     }
 
     public function logout(){
@@ -107,6 +125,7 @@ class Deployment{
                     session_start();
                     $_SESSION['login'] = true;
                     $_SESSION['email'] = $email;
+                    $_SESSION['type'] = $user['type'];
                     $_SESSION['userid'] = $user['userid'];
                     $welcome = "Welcome ".$user['username'];
                     echo json_encode(array("response" =>$welcome));
@@ -130,24 +149,30 @@ class Deployment{
 
     public function addportal(){
         require("conn.php");
+        session_start();
         try {
-            header('Content-Type: application/json');
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $portal_name = $_POST['portal_name'];
-                $portal_url = $_POST['portal_url'];
-                $portal_version = $_POST['portal_version'];
-                $portal_features = $_POST['portal_features'];
-                $sql = $conn->prepare("INSERT INTO portal(portalname, purl, version, pfeatures) VALUES (:portal_name,:portal_url,:portal_version,:portal_features)");
-                $sql->bindParam(':portal_name',$portal_name);
-                $sql->bindParam(':portal_url',$portal_url);
-                $sql->bindParam(':portal_version',$portal_version);
-                $sql->bindParam(':portal_features',$portal_features);
-                $sql->execute();
-                echo json_encode(array("response" =>$portal_name." inserted successfully"));
+            if(isset($_SESSION['login'])){
+                header('Content-Type: application/json');
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $portal_name = $_POST['portal_name'];
+                    $portal_url = $_POST['portal_url'];
+                    $portal_version = $_POST['portal_version'];
+                    $portal_features = $_POST['portal_features'];
+                    $sql = $conn->prepare("INSERT INTO portal(portal_owner,portalname, purl, version, pfeatures) VALUES (:owner,:portal_name,:portal_url,:portal_version,:portal_features)");
+                    $sql->bindParam(':owner',$_SESSION['userid']);
+                    $sql->bindParam(':portal_name',$portal_name);
+                    $sql->bindParam(':portal_url',$portal_url);
+                    $sql->bindParam(':portal_version',$portal_version);
+                    $sql->bindParam(':portal_features',$portal_features);
+                    $sql->execute();
+                    echo json_encode(array("response" =>$portal_name." inserted successfully"));
+                }else{
+                    echo json_encode(array("response" =>"No Data Recieved"));
+                }
+            }else{
+                echo json_encode(array("response"=> "Login Error"));
             }
-            else{
-                echo json_encode(array("response" =>"No Data Recieved"));
-            }
+            
             $conn = null;
         } catch (PDOException $e) {
             echo json_encode(array("response" => "Database error: " . $e->getMessage()));
@@ -257,10 +282,37 @@ class Deployment{
         $conn = null;
     }
 
+    public function deploymentstable(){
+        require('conn.php');
+        try {
+            $sql = "SELECT portal.purl, portal.portalname,deployment.deployment_date, users.username, deployment.required_days FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users on portal.portal_owner = users.userid;";
+        
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+        
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+            if (!empty($data)) {
+                header('Content-Type: application/json');
+                echo json_encode($data);
+            } else {
+                echo json_encode(array("message" => "No data found"));
+            }
+        
+        } catch(PDOException $e) {
+            echo "Connection failed: " . $e->getMessage();
+        }
+        $conn = null;
+    }
 
-    public function viewschedulechange(){
+
+    public function viewdetails(){
         require("conn.php");
-        $sql = "SELECT deployment_version,deployment_date, deployment_note, required_days,portalname, purl, version, pfeatures, new_date, user_note, username, deployment_plan, schhedulechange.deployment_id FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN schhedulechange on schhedulechange.deployment_id = deployment.deployment_id INNER JOIN users on schhedulechange.user_id = users.userid where purl = :purl";
+        if($_GET['from'] == 'schedule'){
+            $sql = "SELECT deployment_version,deployment_date, deployment_note, required_days,portalname, purl, version, pfeatures, new_date, user_note, username, deployment_plan, schhedulechange.deployment_id FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN schhedulechange on schhedulechange.deployment_id = deployment.deployment_id INNER JOIN users on schhedulechange.user_id = users.userid where purl = :purl";
+        }elseif($_GET["from"] == "deployment"){
+            $sql = "SELECT deployment_version,deployment_date, deployment_note, required_days,portalname, purl, version, pfeatures, username, deployment_plan FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users on portal.portal_owner = users.userid where purl = :purl ";
+        }
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(":purl", $_GET['purl']);
         $stmt->execute();
@@ -271,7 +323,8 @@ class Deployment{
 
     public function managechange(){
         require("conn.php");
-        $sql = "UPDATE schhedulechange SET change_status= :status WHERE schhedulechange.deployment_id  :deployment_id";
+        header('Content-Type: application/json');
+        $sql = "UPDATE schhedulechange SET change_status= :status WHERE schhedulechange.deployment_id  = :deployment_id";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(":status", $_POST['status']);
         $stmt->bindParam(":deployment_id", $_POST['deployment_id']);

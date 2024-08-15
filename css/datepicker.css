@@ -1,0 +1,103 @@
+.datepicker {
+    z-index: 9999999 !important; /* Ensure the datepicker appears above all other elements */
+}
+
+/* Datepicker header (month and year) */
+.datepicker-dropdown .datepicker-switch {
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+    padding: 10px 0;
+    background-color: #007bff; /* Bootstrap primary color */
+    color: #fff;
+    border-bottom: 1px solid #007bff;
+}
+
+/* Datepicker table cells (days) */
+.datepicker table tr td,
+.datepicker table tr th {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+/* Datepicker table header (day names) */
+.datepicker table tr th {
+    background-color: #f8f9fc;
+    color: #6c757d;
+}
+
+/* Highlighted today date */
+.datepicker table tr td.today {
+    background-color: #ffeb3b;
+    color: #000;
+    border-radius: 4px;
+}
+
+/* Active date */
+.datepicker table tr td.active,
+.datepicker table tr td.active:hover {
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 4px;
+}
+
+/* Disabled dates */
+.datepicker table tr td.disabled,
+.datepicker table tr td.disabled:hover {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Hover effect */
+.datepicker table tr td:hover {
+    background-color: #e2e6ea;
+    border-radius: 4px;
+}
+
+/* Arrows for previous/next */
+.datepicker .prev,
+.datepicker .next {
+    font-size: 18px;
+    padding: 0 10px;
+    cursor: pointer;
+}
+
+/* Today button */
+.datepicker .datepicker-days .today {
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 4px;
+}
+
+/* Clear button */
+.datepicker .clear {
+    background-color: #e9ecef;
+    color: #6c757d;
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* Year and month selection dropdowns */
+.datepicker .datepicker-months .month,
+.datepicker .datepicker-years .year {
+    padding: 10px;
+    width: 100%;
+    background-color: #f8f9fc;
+    color: #495057;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.datepicker .datepicker-months .month:hover,
+.datepicker .datepicker-years .year:hover {
+    background-color: #007bff;
+    color: #fff;
+}

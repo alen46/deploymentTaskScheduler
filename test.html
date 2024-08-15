@@ -12,6 +12,7 @@
     <title>Deployment Task Scheduler</title>
     <script src="js/deploymentdetails.js"></script>
     <link rel="stylesheet" href="css/datepicker.css">
+    <script src="js/navbar.js"></script>
 </head>
 
 <body>
@@ -22,6 +23,10 @@
                 <img src="img/d.png" alt="Logo" class="image-logo" >
             </a>
             <ul class="nav-menu">
+                <li class="nav-item"><a class= "header__link" href="addportal.html">Add Portal</a></li>
+                <li class="nav-item"><a class= "header__link" href="viewalldeployments.html">View All</a></li>
+                <li class="nav-item"><a class= "header__link" href="deploymentdetails.html">Deployment Details</a></li>
+                <li class="nav-item"><a class= "header__link" href="changeschedule.html">Change Schedule</a></li>
                 <li class="nav-item" ><a class= "header__link" href="" id="login">Logout</a></li>
               </ul>
             <div class="hamburger">
@@ -55,7 +60,7 @@
 
             <div class="form-group">
                 <label for="deployment_date">Deployment Date</label>
-                <input type="text" class="form-control datepicker" id="deployment_date" class="form-control datepicker" placeholder="Deployment Date" name="date" required>
+                <input type="text" class="form-control datepicker" id="deployment_date" class="form-control datepicker" placeholder="Deployment Date" name="deployment_date" required>
             </div>
             
             <div class="form-group">
@@ -75,66 +80,36 @@
 <script>
 $(document).ready(function(){
 
-    $(".hamburger").click(function(){
-        $(this).toggleClass("active");
-        $(".nav-menu").toggleClass("active");
-    });
-
-        $(".nav-link").click(function(){
-        $(".hamburger").removeClass("active");
-        $(".nav-menu").removeClass("active");
-    });
-
-    $.ajax({
-            url: 'main.php?function=checklogin',
-            type: 'GET',
-            dataType: 'json',
-            success: function(response) {
-                if(response.type != '100' && response.type != '104' && response.type != '105' ){
-                    window.location.href = 'notfound.html';
-                }
-                if(response.response == "logout"){
-                    $("#login").text("Logout");
-                    $("#login").off('click').click(function() {
-                        $.ajax({
-                            url: 'main.php?function=logout',
-                            type: 'GET',
-                            dataType: 'json',
-                            success: function(response) {
-                                if(response.response == "login"){
-                                    alert(response.response)
-                                    window.location.href = 'index.html';   
-                                }else{
-                                    $("#login").text("Login").attr("href", "login.html");
-                                }
-                                
-                            },
-                            error: function(xhr, status, error) {
-                                console.error('Error fetching data:', error);
-                            }
-                        });
-                    });     
-
-                }else{
-                    $("#login").text("Login").attr("href", "login.html");
-                }
-                
+        $.ajax({
+            url:'test.php',
+            method:'GET',
+            dataType:'json',
+            success: function(data){
+                console.log(data);
+                const disdate = data;
+                $('.datepicker').datepicker({
+                    format: 'yyyy-mm-dd',
+                    autoclose: true,
+                    todayHighlight: true,
+                    datesDisabled: disdate,
+                    orientation: "top"
+                });
             },
             error: function(xhr, status, error) {
                 console.error('Error fetching data:', error);
             }
         });
 
-
-        var datesForDisable = ["2024-08-08", "2024-08-16", "2024-08-19", "2024-08-25"];
-        
-        $('.datepicker').datepicker({
-            format: 'yyyy-mm-dd',
-            autoclose: true,
-            todayHighlight: true,
-            datesDisabled: datesForDisable,
-            orientation: "bottom auto"
-        });
+        //     var datesForDisable = ["08-08-2024", "08-16-2024", "08-19-2024", "08-25-2024"];
+        //     console.log(datesForDisable);
+        //     console.log(disdate);
+        //     $('.datepicker').datepicker({
+        //     format: 'mm-dd-yyyy',
+        //     autoclose: true,
+        //     todayHighlight: true,
+        //     datesDisabled: disdate,
+        //     orientation: "top"
+        //  });
 });
        
     </script>

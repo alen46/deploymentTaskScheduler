@@ -17,7 +17,7 @@ $(document).ready(function(){
         var url = getQueryParam('data');
 
         $.ajax({
-            url: `main.php?function=viewdetails&purl=${url}&from=schedule`,
+            url: `main.php?function=viewdetails&purl=${url}&from=deployment`,
             type: 'GET',
             dataType: 'json',
             success: function(data) {

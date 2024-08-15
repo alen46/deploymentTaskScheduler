@@ -6,7 +6,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/index.css">
     <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="js/navbar.js"></script>
     <title>Deployment Task Scheduler</title>
+    <style>
+        body{
+            overflow: hidden;
+        }
+        .cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            width: 90%;
+            justify-content: space-between;
+        }
+
+        .card {
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            height: 100px;
+            width: calc(50% - 7.5px); /* Calculate the width to fit two cards per row */
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: 400ms;
+        }
+        .blue {
+            color: white;
+            background: #ad5389;
+            background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+            border: none;
+            letter-spacing: 0.05em;
+            border-radius: 16px
+        }
+
+
+        .card p.tip {
+            font-size: 1em;
+            font-weight: 700;
+        }
+
+        .card p.second-text {
+            font-size: 0.7em;
+        }
+
+        .card:hover {
+            transform: scale(1.1, 1.1);
+        }
+
+        .cards:hover > .card:not(:hover) {
+            filter: blur(1px);
+            transform: scale(0.9, 0.9);
+        }
+    </style>
 </head>
 
 <body>
@@ -14,15 +69,11 @@
         <nav class="navbar">
             <a href="index.html" class="nav-logo">
                 <span class="text-logo">Deployment Task Scheduler</span>
-                <img src="img/d.png" alt="Logo" class="image-logo" >
+                <img src="img/d.png" alt="Logo" class="image-logo">
             </a>
             <ul class="nav-menu">
-                <li class="nav-item"><a class= "header__link" href="addportal.html">Add Portal</a></li>
-                <li class="nav-item"><a class= "header__link" href="viewalldeployments.html">View All</a></li>
-                <li class="nav-item"><a class= "header__link" href="deploymentdetails.html">Deployment Details</a></li>
-                <li class="nav-item"><a class= "header__link" href="changeschedule.html">Change Schedule</a></li>
-                <li class="nav-item" ><a class= "header__link" href="" id="login">Logout</a></li>
-              </ul>
+                <li class="nav-item"><a class="header__link" href="" id="login">Logout</a></li>
+            </ul>
             <div class="hamburger">
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -30,66 +81,25 @@
             </div>
         </nav>
     </header>
+    <div class="cards">
+        <div class="card blue" onclick="window.location.href = 'addportal.html';">
+            <p class="tip" >Add Portal</p>
+        </div>
+        <div class="card blue" onclick="window.location.href = 'deploymentdetails.html';">
+            <p class="tip">Add Deployment</p>
+        </div>
+        <div class="card blue" onclick="window.location.href = 'alldeployments.html';">
+            <p class="tip">View Portals Deployment</p>
+        </div>
+        <div class="card blue" onclick="window.location.href = 'changeschedule.html';">
+            <p class="tip">Change Deployment Date</p>
+        </div>
+        <div class="card blue" onclick="window.location.href = 'viewalldeployments.html';">
+            <p class="tip">View All Changes</p>
+        </div>
+        <div class="card blue" onclick="window.location.href = 'addportal.html';">
+            <p class="tip">Generate Report</p>
+        </div>
+    </div>
 </body>
-<script>
-$(document).ready(function(){
-
-    $(".hamburger").click(function(){
-        $(this).toggleClass("active");
-        $(".nav-menu").toggleClass("active");
-    });
-
-        $(".nav-link").click(function(){
-        $(".hamburger").removeClass("active");
-        $(".nav-menu").removeClass("active");
-    });
-
-    $.ajax({
-            url: 'main.php?function=checklogin',
-            type: 'GET',
-            dataType: 'json',
-            success: function(response) {
-                if(response.response == "logout"){
-                    $("#login").text("Logout");
-                    $("#login").off('click').click(function() {
-                        $.ajax({
-                            url: 'main.php?function=logout',
-                            type: 'GET',
-                            dataType: 'json',
-                            success: function(response) {
-                                if(response.response == "login"){
-                                    alert(response.response)
-                                    location.reload();    
-                                }else{
-                                    $("#login").text("Login").attr("href", "login.html");
-                                }
-                                
-                            },
-                            error: function(xhr, status, error) {
-                                console.error('Error fetching data:', error);
-                            }
-                        });
-                    });     
-
-                }else{
-                    $("#login").text("Login").attr("href", "login.html");
-                }
-                
-            },
-            error: function(xhr, status, error) {
-                console.error('Error fetching data:', error);
-            }
-        });
-
-        $('#myButton').click(function() {
-        // Action on first click
-        alert("First click action");
-
-        // Change the click event handler
-        
-    });
-    
-});
-</script>
-
 </html>

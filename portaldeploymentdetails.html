@@ -6,7 +6,7 @@
     <title>Portal Information Form</title>
     <script src="js/jquery-3.7.1.min.js"></script>
     <link rel="stylesheet" href="css/viewdeployment.css">
-    <script src="js/viewdeploymentchanges.js"></script>
+    <script src="js/portaldeploymentdetails.js"></script>
 </head>
 <body>
     <header>
@@ -26,7 +26,7 @@
         </nav>
     </header>
     <div class="form-container">
-        <h1>Portal Information Form</h1>
+        <h1>Portal Deployment Details</h1>
         <form>
             <input type="hidden" id="deployment_id" name="deployment_id">
             <div class="form-row">
@@ -39,6 +39,12 @@
                     <input readonly type="text" id="portal_name" name="portal_name" placeholder="Portal Name">
                 </div>
             </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="username">Portal Owner</label>
+                    <input readonly type="text" id="username" name="username" placeholder="Username">
+                </div>
+            </div>
 
             <div class="form-row">
                 <div class="form-group">
@@ -48,6 +54,17 @@
                 <div class="form-group">
                     <label for="deployment_version">Deployment Version</label>
                     <input readonly type="text" id="deployment_version" name="deployment_version" placeholder="Deployment Version">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="deployment_date">Deployment Date</label>
+                    <input readonly type="date" id="deployment_date" name="deployment_date">
+                </div>
+                <div class="form-group">
+                    <label for="days">Days Required</label>
+                    <input readonly type="text" id="days" name="days" placeholder="Days for deployment">
                 </div>
             </div>
 
@@ -75,39 +92,6 @@
                 </div>
                 </button>
 
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="deployment_date">Deployment Date</label>
-                    <input readonly type="date" id="deployment_date" name="deployment_date">
-                </div>
-                <div class="form-group">
-                    <label for="days">Days Required</label>
-                    <input readonly type="text" id="days" name="days" placeholder="Days for deployment">
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input readonly type="text" id="username" name="username" placeholder="Username">
-                </div>
-                <div class="form-group">
-                    <label for="change_date">Change Date</label>
-                    <input readonly type="date" id="change_date" name="change_date">
-                </div>
-                
-            </div>
-            <div class="form-group">
-                <label for="user_note">User Note</label>
-                <textarea readonly id="user_note" name="user_note" placeholder="User Note"></textarea>
-            </div>
-            
-
-            <div class="form-group">
-                <button style="background-color: green;" id="acceptbtn">Accept</button>
-                <button style="background-color: red;" id="rejectbtn">Reject</button>
             </div>
         </form>
     </div>
@@ -165,16 +149,6 @@ $.ajax({
         }
     });
 
-
-    var datesForDisable = ["2024-08-08", "2024-08-16", "2024-08-19", "2024-08-25"];
-    
-    $('.datepicker').datepicker({
-        format: 'yyyy-mm-dd',
-        autoclose: true,
-        todayHighlight: true,
-        datesDisabled: datesForDisable,
-        orientation: "bottom auto"
-    });
-});
+}); 
 </script>
 </html>
