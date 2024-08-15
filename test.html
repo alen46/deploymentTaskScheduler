@@ -79,7 +79,7 @@
 </body>
 <script>
 $(document).ready(function(){
-
+        let x = $("#num_days").val();
         $.ajax({
             url:'test.php',
             method:'GET',
@@ -99,17 +99,7 @@ $(document).ready(function(){
                 console.error('Error fetching data:', error);
             }
         });
-
-        //     var datesForDisable = ["08-08-2024", "08-16-2024", "08-19-2024", "08-25-2024"];
-        //     console.log(datesForDisable);
-        //     console.log(disdate);
-        //     $('.datepicker').datepicker({
-        //     format: 'mm-dd-yyyy',
-        //     autoclose: true,
-        //     todayHighlight: true,
-        //     datesDisabled: disdate,
-        //     orientation: "top"
-        //  });
+        
 });
        
     </script>
