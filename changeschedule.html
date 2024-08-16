@@ -119,6 +119,9 @@ $(document).ready(function(){
                 console.error('Error fetching data:', error);
             }
         });
+
+        const today = new Date().toISOString().split('T')[0];
+        $('#new_date').attr('min', today);
     
 });
 </script>
