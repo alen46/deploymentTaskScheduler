@@ -39,7 +39,6 @@
                     <input readonly type="text" id="portal_name" name="portal_name" placeholder="Portal Name">
                 </div>
             </div>
-
             <div class="form-row">
                 <div class="form-group">
                     <label for="current_version">Current Version</label>
@@ -50,17 +49,14 @@
                     <input readonly type="text" id="deployment_version" name="deployment_version" placeholder="Deployment Version">
                 </div>
             </div>
-
             <div class="form-group">
                 <label for="portal_features">Portal Features</label>
                 <textarea readonly id="portal_features" name="portal_features" placeholder="Portal Features"></textarea>
             </div>
-
             <div class="form-group">
                 <label for="new_features">New Features</label>
                 <textarea readonly id="new_features" name="new_features" placeholder="New Features"></textarea>
             </div>
-
             <div class="form-group">
                 <button class="cssbuttons-io-button">
                 Download Deployment Plan
@@ -74,9 +70,7 @@
                     </svg>
                 </div>
                 </button>
-
             </div>
-
             <div class="form-row">
                 <div class="form-group">
                     <label for="deployment_date">Deployment Date</label>
@@ -87,7 +81,6 @@
                     <input readonly type="text" id="days" name="days" placeholder="Days for deployment">
                 </div>
             </div>
-
             <div class="form-row">
                 <div class="form-group">
                     <label for="username">Username</label>
@@ -96,15 +89,16 @@
                 <div class="form-group">
                     <label for="change_date">Change Date</label>
                     <input readonly type="date" id="change_date" name="change_date">
-                </div>
-                
+                </div>   
             </div>
             <div class="form-group">
                 <label for="user_note">User Note</label>
                 <textarea readonly id="user_note" name="user_note" placeholder="User Note"></textarea>
             </div>
-            
-
+            <div class="form-group">
+                <label for="user_note">Admin Note</label>
+                <textarea  id="admin_note" name="admin_note" placeholder="Enter Admin Note -- Change Info"></textarea>
+            </div>
             <div class="form-group">
                 <button style="background-color: green;" id="acceptbtn">Accept</button>
                 <button style="background-color: red;" id="rejectbtn">Reject</button>
@@ -114,23 +108,21 @@
 </body>
 <script>
 $(document).ready(function(){
+    $(".hamburger").click(function(){
+        $(this).toggleClass("active");
+        $(".nav-menu").toggleClass("active");
+    });
 
-$(".hamburger").click(function(){
-    $(this).toggleClass("active");
-    $(".nav-menu").toggleClass("active");
-});
-
-    $(".nav-link").click(function(){
-    $(".hamburger").removeClass("active");
-    $(".nav-menu").removeClass("active");
-});
-
-$.ajax({
+        $(".nav-link").click(function(){
+        $(".hamburger").removeClass("active");
+        $(".nav-menu").removeClass("active");
+    });
+    $.ajax({
         url: 'main.php?function=checklogin',
         type: 'GET',
         dataType: 'json',
         success: function(response) {
-            if(response.type != '100' && response.type != '104' && response.type != '105' ){
+            if(response.type != '100' ){
                 window.location.href = 'notfound.html';
             }
             if(response.response == "logout"){
@@ -147,33 +139,19 @@ $.ajax({
                             }else{
                                 $("#login").text("Login").attr("href", "login.html");
                             }
-                            
                         },
                         error: function(xhr, status, error) {
                             console.error('Error fetching data:', error);
                         }
                     });
                 });     
-
             }else{
                 $("#login").text("Login").attr("href", "login.html");
             }
-            
         },
         error: function(xhr, status, error) {
             console.error('Error fetching data:', error);
         }
-    });
-
-
-    var datesForDisable = ["2024-08-08", "2024-08-16", "2024-08-19", "2024-08-25"];
-    
-    $('.datepicker').datepicker({
-        format: 'yyyy-mm-dd',
-        autoclose: true,
-        todayHighlight: true,
-        datesDisabled: datesForDisable,
-        orientation: "bottom auto"
     });
 });
 </script>

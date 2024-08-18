@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/index.css">
+<script src="js/jquery-3.7.1.min.js"></script>
+<script src="js/navbar.js"></script>
+<title>Deployment Task Scheduler</title>
+<style>
+body{
+    overflow: hidden;
+    color: #0f0c29;
+}
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    width: 90%;
+    justify-content: space-between;
+}
+.card {
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    height: 100px;
+    width: calc(50% - 7.5px); /* Calculate the width to fit two cards per row */
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    transition: 400ms;
+}
+.blue {
+    color: white;
+    background: #ad5389;
+    background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+    border: none;
+    letter-spacing: 0.05em;
+    border-radius: 16px
+}
+.card p.tip {
+    font-size: 1em;
+    font-weight: 700;
+}
+.card p.second-text {
+    font-size: 0.7em;
+}
+.card:hover {
+    transform: scale(1.1, 1.1);
+}
+.cards:hover > .card:not(:hover) {
+    filter: blur(1px);
+    transform: scale(0.9, 0.9);
+}
+.nav-item {
+    list-style: none;
+    color: white;
+    text-decoration: none;
+    line-height: 40px;
+    padding-right: 20px;
+    display: flex;
+    justify-content: right;
+}
+.popup {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: none;
+}
+.popup-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888888;
+    width: 80%;
+    font-weight: bolder;
+}
+.popup-content button {
+    display: block;
+    margin: 0 auto;
+}
+.show {
+    display: block;
+}
+</style>
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <a href="index.html" class="nav-logo">
+                <span class="text-logo">Deployment Task Scheduler</span>
+                <img src="img/d.png" alt="Logo" class="image-logo">
+            </a>
+            <ul class="nav-menu">
+                <li class="nav-item"><img src="img/bell.png" width="5%" height="5%" alt="" id="notificationimg"></li>
+                <li class="nav-item"><a class="header__link" href="" id="login">Logout</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+    <div class="cards">
+        <div class="card blue" onclick="window.location.href = 'reporttable.html?report=date';">
+            <p class="tip" >Date Wise</p>
+        </div>
+        <div class="card blue" onclick="window.location.href = 'reporttable.html?report=alldeployments';">
+            <p class="tip">All Deployments</p>
+        </div>
+        <div class="card blue" onclick="window.location.href = 'reporttable.html?report=change';">
+            <p class="tip">All Changes</p>
+        </div>
+        <div class="card blue" onclick="window.location.href = 'reporttable.html?report=user';">
+            <p class="tip">User Wise</p>
+        </div>
+    </div>
+        <div id="myPopup" class="popup">
+            <div class="popup-content">
+                <p id="msg"></p>
+                <button id="closePopup">Close</button>
+            </div>
+        </div>
+</body>
+<script>
+$(document).ready(function(){
+     $.ajax({
+            url: 'main.php?function=checklogin',
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if(response.type == '102'){
+                    window.location.href = 'notfound.html';
+                }
+                if(response.response == "logout"){
+                    $("#login").text("Logout");
+                    $("#login").off('click').click(function() {
+                        $.ajax({
+                            url: 'main.php?function=logout',
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function(response) {
+                                if(response.response == "login"){
+                                    alert(response.response)
+                                    window.location.href = 'index.html';   
+                                }else{
+                                    $("#login").text("Login").attr("href", "login.html");
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error fetching data:', error);
+                            }
+                        });
+                    });     
+
+                }else{
+                    $("#login").text("Login").attr("href", "login.html");
+                }      
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching data:', error);
+            }
+        });
+        $.ajax({
+            url: 'test2.php',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                console.log(data);
+                $("#notificationimg").attr('src','img/notification.png')
+                let msgContent = '';
+                data.forEach(element => {
+                    let x= `${element.portalname} (${element.purl}) deployment date is adjusted from ${element.old_date} to ${element.new_date} : ${element.info}  `
+                    msgContent += x + '<br>';
+                
+                });
+                $("#msg").html(msgContent);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching data:', error);
+            }
+        });  
+        notificationimg.addEventListener(
+                "click",
+                function () {
+                    myPopup.classList.add("show");
+                    $("#notificationimg").attr('src','img/bell.png')
+
+                }
+            );
+            closePopup.addEventListener(
+                "click",
+                function () {
+                    myPopup.classList.remove(
+                        "show"
+                    );
+                }
+            );
+            window.addEventListener(
+                "click",
+                function (event) {
+                    if (event.target == myPopup) {
+                        myPopup.classList.remove(
+                            "show"
+                        );
+                    }
+                }
+        );
+        $.ajax({
+            url: 'main.php?function=message',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                console.log(data);
+                $("#notificationimg").attr('src','img/notification.png')
+                let msgContent = '';
+                data.forEach(element => {
+                    let x= `${element.portalname} (${element.purl}) deployment date is adjusted from ${element.old_date} to ${element.new_date} : ${element.info}  `
+                    msgContent += x + '<hr>';
+                
+                });
+                $("#msg").html(msgContent);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching data:', error);
+            }
+        });
+    });
+    notificationimg.addEventListener(
+                "click",
+                function () {
+                    myPopup.classList.add("show");
+                    $("#notificationimg").attr('src','img/bell.png')
+                }
+            );
+            closePopup.addEventListener(
+                "click",
+                function () {
+                    myPopup.classList.remove(
+                        "show"
+                    );
+                }
+            );
+            window.addEventListener(
+                "click",
+                function (event) {
+                    if (event.target == myPopup) {
+                        myPopup.classList.remove(
+                            "show"
+                        );
+                    }
+                }
+            );
+</script>
+</html>

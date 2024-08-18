@@ -23,11 +23,7 @@
                 <img src="img/d.png" alt="Logo" class="image-logo" >
             </a>
             <ul class="nav-menu">
-                <li class="nav-item"><a class= "header__link" href="addportal.html">Add Portal</a></li>
-                <li class="nav-item"><a class= "header__link" href="viewalldeployments.html">View All</a></li>
-                <li class="nav-item"><a class= "header__link" href="deploymentdetails.html">Deployment Details</a></li>
-                <li class="nav-item"><a class= "header__link" href="changeschedule.html">Change Schedule</a></li>
-                <li class="nav-item" ><a class= "header__link" href="" id="login">Logout</a></li>
+                 <li class="nav-item" ><a class= "header__link" href="" id="login">Logout</a></li>
               </ul>
             <div class="hamburger">
                 <span class="bar"></span>
@@ -79,7 +75,47 @@
 </body>
 <script>
 $(document).ready(function(){
-        let x = $("#num_days").val();
+
+    $.ajax({
+            url: 'main.php?function=checklogin',
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if(response.type != '100' && response.type != '104' && response.type != '105' ){
+                    window.location.href = 'notfound.html';
+                }
+                if(response.response == "logout"){
+                    $("#login").text("Logout");
+                    $("#login").off('click').click(function() {
+                        $.ajax({
+                            url: 'main.php?function=logout',
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function(response) {
+                                if(response.response == "login"){
+                                    alert(response.response)
+                                    window.location.href = 'index.html';   
+                                }else{
+                                    $("#login").text("Login").attr("href", "login.html");
+                                }
+                                
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error fetching data:', error);
+                            }
+                        });
+                    });     
+
+                }else{
+                    $("#login").text("Login").attr("href", "login.html");
+                }
+                
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching data:', error);
+            }
+        });
+        
         $.ajax({
             url:'main.php?function=disabledate',
             method:'GET',
@@ -92,7 +128,6 @@ $(document).ready(function(){
                     autoclose: true,
                     todayHighlight: true,
                     datesDisabled: disdate,
-                    orientation: "top"
                 });
             },
             error: function(xhr, status, error) {

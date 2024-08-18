@@ -52,13 +52,31 @@ class Deployment{
     }
 
     public function fetchportal(){
+        session_start();
         require("conn.php");
         if($_GET['from'] == 'changedeployment'){
-            $sql = "SELECT portal_id, portal.purl FROM `deployment` INNER JOIN portal on portal.pid = deployment.portal_id WHERE deployment_id NOT IN(SELECT deployment_id FROM schhedulechange);";
+            if($_SESSION['type'] != '100'){
+                $sql = "SELECT portal_id, portal.purl FROM `deployment` INNER JOIN portal on portal.pid = deployment.portal_id WHERE deployment_id NOT IN(SELECT deployment_id FROM schhedulechange)  AND portal.portal_owner = :usr;";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(":usr", $_SESSION["userid"]);
+            }else{
+                $sql = "SELECT portal_id, portal.purl FROM `deployment` INNER JOIN portal on portal.pid = deployment.portal_id WHERE deployment_id NOT IN(SELECT deployment_id FROM schhedulechange);";
+                $stmt = $conn->prepare($sql);
+            }
         }else if($_GET['from'] == 'deploymentdetails'){
-            $sql = "SELECT pid, portal.purl FROM portal WHERE pid NOT IN (SELECT deployment.portal_id from deployment)";
+            if($_SESSION['type'] != '100'){
+                $sql = "SELECT pid, portal.purl FROM portal WHERE pid NOT IN (SELECT deployment.portal_id from deployment) AND portal.portal_owner = :usr ";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(":usr", $_SESSION["userid"]);
+            }else{
+                $sql = "SELECT pid, portal.purl FROM portal WHERE pid NOT IN (SELECT deployment.portal_id from deployment)";
+                $stmt = $conn->prepare($sql);
+            }
+        }else if($_GET['from'] == 'usr'){
+            $sql = "SELECT userid, username FROM users";
+            $stmt = $conn->prepare($sql);
         }
-        $stmt = $conn->query($sql);
+        $stmt->execute();
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $options[] = $row;
         }
@@ -74,6 +92,19 @@ class Deployment{
         $stmt->execute();
         $details = $stmt->fetch(PDO::FETCH_ASSOC);
             echo json_encode($details);
+        $conn = null;
+    }
+
+    public function changepassword(){
+        require("conn.php");
+        $pass = $_POST['newpassword'];
+        $password = password_hash($pass, PASSWORD_DEFAULT);
+        $sql = "UPDATE `users` SET `password`= :password WHERE userid = :userid ";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(":userid", $_SESSION['userid']);
+        $stmt->bindParam(':password',$password);
+        $stmt->execute();
+        echo json_encode(array("response" =>"Password Changed successfully"));
         $conn = null;
     }
 
@@ -262,7 +293,7 @@ class Deployment{
     public function datatable(){
         require('conn.php');
         try {
-            $sql = "SELECT portal.purl, portal.portalname,deployment.deployment_date, users.username, schhedulechange.new_date FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN schhedulechange on schhedulechange.deployment_id = deployment.deployment_id INNER JOIN users on schhedulechange.user_id = users.userid;";
+            $sql = "SELECT portal.purl, portal.portalname,deployment.deployment_date, users.username, schhedulechange.new_date FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN schhedulechange on schhedulechange.deployment_id = deployment.deployment_id INNER JOIN users on schhedulechange.user_id = users.userid WHERE schhedulechange.change_status = 'Pending' ;";
         
             $stmt = $conn->prepare($sql);
             $stmt->execute();
@@ -285,7 +316,7 @@ class Deployment{
     public function deploymentstable(){
         require('conn.php');
         try {
-            $sql = "SELECT portal.purl, portal.portalname,deployment.deployment_date, users.username, deployment.required_days FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users on portal.portal_owner = users.userid;";
+            $sql = "SELECT portal.purl, portal.portalname,deployment.deployment_date, users.username, deployment.required_days , deployment.deployment_id FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users on portal.portal_owner = users.userid order by deployment_date";
         
             $stmt = $conn->prepare($sql);
             $stmt->execute();
@@ -300,7 +331,7 @@ class Deployment{
             }
         
         } catch(PDOException $e) {
-            echo "Connection failed: " . $e->getMessage();
+            echo json_encode(array("message" =>"Connection failed: " . $e->getMessage()));
         }
         $conn = null;
     }
@@ -311,7 +342,7 @@ class Deployment{
         if($_GET['from'] == 'schedule'){
             $sql = "SELECT deployment_version,deployment_date, deployment_note, required_days,portalname, purl, version, pfeatures, new_date, user_note, username, deployment_plan, schhedulechange.deployment_id FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN schhedulechange on schhedulechange.deployment_id = deployment.deployment_id INNER JOIN users on schhedulechange.user_id = users.userid where purl = :purl";
         }elseif($_GET["from"] == "deployment"){
-            $sql = "SELECT deployment_version,deployment_date, deployment_note, required_days,portalname, purl, version, pfeatures, username, deployment_plan FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users on portal.portal_owner = users.userid where purl = :purl ";
+            $sql = "SELECT deployment_version,deployment_date, deployment_note, required_days,portalname, purl, version, pfeatures, username, deployment_plan, portal_id FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users on portal.portal_owner = users.userid where purl = :purl ";
         }
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(":purl", $_GET['purl']);
@@ -352,6 +383,35 @@ class Deployment{
         }
         echo json_encode($allDates);  
 
+    }
+
+    public function message(){
+        require("conn.php");
+        session_start();
+        $stmt = $conn->prepare("select changelog.old_date,changelog.new_date,changelog.change_date,changelog.change_time,changelog.info, portal.portalname,portal.purl,users.username FROM `changelog` INNER JOIN deployment on changelog.deployment_id = deployment.deployment_id INNER JOIN portal on portal.pid =deployment.portal_id INNER join  users on portal.portal_owner = users.userid where users.userid = :id");
+        $stmt->bindParam(":id", $_SESSION['userid']);
+        $stmt->execute();
+        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($res);
+    }
+
+    public function editdeployment(){
+        require("conn.php");
+        session_start();
+        $stmt = $conn->prepare("UPDATE `deployment` SET `deployment_version`=:dversion,`deployment_date`=:ddate,`required_days`=:rdays,`deployment_note`=:dnote WHERE deployment.portal_id = :pid");
+        $stmt->bindParam(":dversion", $_POST['deployment_version']);
+        $stmt->bindParam(":ddate", $_POST['deployment_date']);
+        $stmt->bindParam(":rdays", $_POST['days']);
+        $stmt->bindParam(":dnote", $_POST['new_features']);
+        $stmt->bindParam(":pid", $_POST['portal_id']);
+        $stmt->execute();
+        $stmt2 = $conn->prepare("UPDATE `portal` SET `portalname`=:pname ,`version`=:pversion,`pfeatures`=:pfeatures WHERE portal.pid  = :pid");
+        $stmt2->bindParam(":pname", $_POST['portal_name']);
+        $stmt2->bindParam(":pversion", $_POST['current_version']);
+        $stmt2->bindParam(":pfeatures", $_POST['portal_features']);
+        $stmt2->bindParam(":pid", $_POST['portal_id']);
+        $stmt2->execute();
+        echo json_encode(array("message" => "Data Updated"));
     }
 
 }

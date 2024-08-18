@@ -57,6 +57,9 @@ $(document).ready(function(){
     {
         e.preventDefault(e);
         let formData = {
+            'new_date':$("#change_date").val(),
+            'old_date':$("#deployment_date").val(),
+            'info':$("#admin_note").val(),
             'status':"Accepted",
             'function':"managechange",
             'deployment_id':$("#deployment_id").val()
@@ -65,7 +68,7 @@ $(document).ready(function(){
         console.log(formData);
         $.ajax({
             type: "POST",
-            url: "main.php",
+            url: "test.php",
             data: formData,
             dataType: "json",
             // processData: false, 

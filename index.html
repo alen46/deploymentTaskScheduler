@@ -1,69 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/index.css">
-    <script src="js/jquery-3.7.1.min.js"></script>
-    <script src="js/navbar.js"></script>
-    <title>Deployment Task Scheduler</title>
-    <style>
-        body{
-            overflow: hidden;
-        }
-        .cards {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            width: 90%;
-            justify-content: space-between;
-        }
-
-        .card {
-            
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            text-align: center;
-            height: 100px;
-            width: calc(50% - 7.5px); /* Calculate the width to fit two cards per row */
-            border-radius: 10px;
-            color: white;
-            cursor: pointer;
-            transition: 400ms;
-        }
-        .blue {
-            color: white;
-            background: #ad5389;
-            background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
-            border: none;
-            letter-spacing: 0.05em;
-            border-radius: 16px
-        }
-
-
-        .card p.tip {
-            font-size: 1em;
-            font-weight: 700;
-        }
-
-        .card p.second-text {
-            font-size: 0.7em;
-        }
-
-        .card:hover {
-            transform: scale(1.1, 1.1);
-        }
-
-        .cards:hover > .card:not(:hover) {
-            filter: blur(1px);
-            transform: scale(0.9, 0.9);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/index.css">
+<script src="js/jquery-3.7.1.min.js"></script>
+<script src="js/navbar.js"></script>
+<title>Deployment Task Scheduler</title>
+<style>
+body{
+    overflow: hidden;
+    color: #0f0c29;
+}
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    width: 90%;
+    justify-content: space-between;
+}
+.card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    height: 100px;
+    width: calc(50% - 7.5px); /* Calculate the width to fit two cards per row */
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    transition: 400ms;
+}
+.blue {
+    color: white;
+    background: #ad5389;
+    background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+    border: none;
+    letter-spacing: 0.05em;
+    border-radius: 16px
+}
+.card p.tip {
+    font-size: 1em;
+    font-weight: 700;
+}
+.card p.second-text {
+    font-size: 0.7em;
+}
+.card:hover {
+    transform: scale(1.1, 1.1);
+}
+.cards:hover > .card:not(:hover) {
+    filter: blur(1px);
+    transform: scale(0.9, 0.9);
+}
+.nav-item {
+    list-style: none;
+    color: white;
+    text-decoration: none;
+    line-height: 40px;
+    padding-right: 20px;
+    display: flex;
+    justify-content: right;
+}
+.popup {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: none;
+}
+.popup-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888888;
+    width: 90%;
+    border-radius: 15px;
+    font-weight: bolder;
+}
+.popup-content button {
+    display: block;
+    margin: 0 auto;
+}
+.show {
+    display: block;
+}
+</style>
 </head>
-
 <body>
     <header class="header">
         <nav class="navbar">
@@ -72,6 +101,7 @@
                 <img src="img/d.png" alt="Logo" class="image-logo">
             </a>
             <ul class="nav-menu">
+                <li class="nav-item"><img src="img/bell.png" width="5%" height="5%" alt="" id="notificationimg"></li>
                 <li class="nav-item"><a class="header__link" href="" id="login">Logout</a></li>
             </ul>
             <div class="hamburger">
@@ -81,26 +111,41 @@
             </div>
         </nav>
     </header>
-    <div class="cards">
-        <div class="card blue" onclick="window.location.href = 'addportal.html';">
+    <div class="cards" id="cards">
+        <div class="card blue" onclick="window.location.href = 'addportal.html';" id="card1">
             <p class="tip" >Add Portal</p>
         </div>
-        <div class="card blue" onclick="window.location.href = 'deploymentdetails.html';">
+        <div class="card blue" onclick="window.location.href = 'deploymentdetails.html';" id="card2">
             <p class="tip">Add Deployment</p>
         </div>
-        <div class="card blue" onclick="window.location.href = 'alldeployments.html';">
+        <div class="card blue" onclick="window.location.href = 'alldeployments.html';" id="card3">
             <p class="tip">View Portals Deployment</p>
         </div>
-        <div class="card blue" onclick="window.location.href = 'changeschedule.html';">
+        <div class="card blue" onclick="window.location.href = 'changeschedule.html';" id="card4" >
             <p class="tip">Change Deployment Date</p>
         </div>
-        <div class="card blue" onclick="window.location.href = 'viewalldeployments.html';">
+        <div class="card blue" onclick="window.location.href = 'viewalldeployments.html';" id="card5">
             <p class="tip">View All Changes</p>
         </div>
-        <div class="card blue" onclick="window.location.href = 'addportal.html';">
+        <div class="card blue" onclick="window.location.href = 'report.html';" id="card6">
             <p class="tip">Generate Report</p>
         </div>
+        <div class="card blue" onclick="window.location.href = 'register.html';" id="card7">
+            <p class="tip">Add User</p>
+        </div>
+        <div class="card blue" onclick="window.location.href = 'editdeployments.html';" id="card8">
+            <p class="tip">Edit Deployment Details</p>
+        </div>
+        <div class="card blue" onclick="window.location.href = 'passwordchange.html';" id="card9">
+            <p class="tip">Change Password</p>
+        </div>
     </div>
+        <div id="myPopup" class="popup">
+            <div class="popup-content">
+                <p id="msg"></p>
+                <button id="closePopup">Close</button>
+            </div>
+        </div>
 </body>
 <script>
 $(document).ready(function(){
@@ -109,6 +154,13 @@ $(document).ready(function(){
             type: 'GET',
             dataType: 'json',
             success: function(response) {
+                if(response.type != '100'){
+                    $("#card5, #card6, #card7, #card8").hide();
+                }
+                if(response.type != '100'){
+                    $("#card1, #card2, #card3, #card4, #card5, #card8, #card7").hide();
+                    $("#card6").show();
+                }
                 if(response.response == "logout"){
                     $("#login").text("Logout");
                     $("#login").off('click').click(function() {
@@ -123,7 +175,6 @@ $(document).ready(function(){
                                 }else{
                                     $("#login").text("Login").attr("href", "login.html");
                                 }
-                                
                             },
                             error: function(xhr, status, error) {
                                 console.error('Error fetching data:', error);
@@ -133,13 +184,60 @@ $(document).ready(function(){
 
                 }else{
                     $("#login").text("Login").attr("href", "login.html");
+                    $("#notificationimg").hide();
+                    $("#cards").hide()
                 }
-                
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching data:', error);
+            }
+        });
+        $.ajax({
+            url: 'main.php?function=message',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                if(data.length > 0 ){
+                    console.log(data);
+                    $("#notificationimg").attr('src','img/notification.png')
+                    let msgContent = '';
+                    data.forEach(element => {
+                        let x= `${element.portalname} (${element.purl}) deployment date is adjusted from ${element.old_date} to ${element.new_date} : ${element.info}  `
+                        msgContent += x + '<hr>';
+                    
+                    });
+                    $("#msg").html(msgContent);
+                }
             },
             error: function(xhr, status, error) {
                 console.error('Error fetching data:', error);
             }
         });
     });
+    notificationimg.addEventListener(
+                "click",
+                function () {
+                    myPopup.classList.add("show");
+                    $("#notificationimg").attr('src','img/bell.png')
+                }
+            );
+            closePopup.addEventListener(
+                "click",
+                function () {
+                    myPopup.classList.remove(
+                        "show"
+                    );
+                }
+            );
+            window.addEventListener(
+                "click",
+                function (event) {
+                    if (event.target == myPopup) {
+                        myPopup.classList.remove(
+                            "show"
+                        );
+                    }
+                }
+            );
 </script>
 </html>
