@@ -9,7 +9,6 @@
     <script src="js/jquery-3.7.1.min.js"></script>
     <script src="js/navbar.js"></script>
     <script src="js/validation.js"></script>
-    <script src="js/register.js"></script>
     <link rel="stylesheet" href="css/register.css">
 </head>
 <body>
@@ -51,7 +50,7 @@
                                 <div class="col-md-6">
                                     <label class="small mb-1" for="email">Email</label>
                                     <input required class="form-control" id="email" type="text" placeholder="Email">
-                                    <small id="emailvalid" class="form-text text-muted invalid-feedback" ><p style="color: red;">Enter a valid email</p> </small>
+                                    <small id="emailvalid" class="form-text text-muted invalid-feedback" ><p style="color: red;" id="emailerror">Enter a valid email</p> </small>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="small mb-1" for="phone">Phone</label>

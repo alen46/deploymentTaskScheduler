@@ -15,6 +15,24 @@ $(document).ready(function () {
         phone.dispatchEvent(new Event('blur'));
     });
 
+    $("#email").keyup(function () {
+        let email = $("#email").val();
+        $.ajax({
+            url: `main.php?function=emailcheck&email=${email}`,
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                console.log(data);
+                if(data == 'ok'){
+                    emailError = false;
+                    $('#email').addClass("is-invalid");
+                    $("#emailerror").text("email alerady exist");
+                    $("#emailerror").show();
+                }
+            }
+        });
+    });
+
     
     function validateUsername() {
         let name = $("#name").val();
