@@ -4,11 +4,52 @@ $(document).ready(function(){
         $(this).toggleClass("active");
         $(".nav-menu").toggleClass("active");
     });
-
+    
         $(".nav-link").click(function(){
         $(".hamburger").removeClass("active");
         $(".nav-menu").removeClass("active");
     });
+    
+    $.ajax({
+            url: 'main.php?function=checklogin',
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if(response.type != '100' && response.type != '102' ){
+                    window.location.href = 'notfound.html';
+                }
+                if(response.response == "logout"){
+                    $("#login").text("Logout");
+                    $("#login").off('click').click(function() {
+                        $.ajax({
+                            url: 'main.php?function=logout',
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function(response) {
+                                if(response.response == "login"){
+                                    alert(response.response)
+                                    window.location.href = 'index.html';   
+                                }else{
+                                    $("#login").text("Login").attr("href", "login.html");
+                                }
+                                
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error fetching data:', error);
+                            }
+                        });
+                    });     
+    
+                }else{
+                    $("#login").text("Login").attr("href", "login.html");
+                }
+                
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching data:', error);
+            }
+        });
+    
     
     function getQueryParam(param) {
         const urlParams = new URLSearchParams(window.location.search);

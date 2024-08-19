@@ -55,7 +55,7 @@
             type: 'GET',
             dataType: 'json',
             success: function(response) {
-                if(response.type != '100' && response.type != '104' && response.type != '105' ){
+                if(response.type != '100' && response.type != '102'){
                     window.location.href = 'notfound.html';
                 }
                 if(response.response == "logout"){

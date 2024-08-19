@@ -139,6 +139,9 @@ body{
         <div class="card blue" onclick="window.location.href = 'passwordchange.html';" id="card9">
             <p class="tip">Change Password</p>
         </div>
+        <div class="card blue" onclick="window.location.href = 'edituser.html';" id="card10">
+            <p class="tip">Edit User</p>
+        </div>
     </div>
         <div id="myPopup" class="popup">
             <div class="popup-content">
@@ -156,10 +159,10 @@ $(document).ready(function(){
             success: function(response) {
                 if(response.type != '100'){
                     $("#card5, #card6, #card7, #card8").hide();
-                }
-                if(response.type != '100'){
+                    if(response.type == '101' ){
                     $("#card1, #card2, #card3, #card4, #card5, #card8, #card7").hide();
                     $("#card6").show();
+                }
                 }
                 if(response.response == "logout"){
                     $("#login").text("Logout");

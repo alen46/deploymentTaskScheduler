@@ -1,41 +1,62 @@
 $(document).ready(function(){
-    
-    // $('#deployment_date').click(function(){
-    //     if($("#num_days").val()){
-    //         const today = new Date() //.toISOString().split('T')[0];
-    //         console.log(today);
-    //         const numDays = parseInt($("#num_days").val(), 10);
-    //         console.log(numDays)
-    //         today.setDate(today.getDate() + numDays+1)
-            
+    $.ajax({
+        url: 'main.php?function=checklogin',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if(response.type != '100' && response.type != '102'){
+                window.location.href = 'notfound.html';
+            }
+            if(response.response == "logout"){
+                $("#login").text("Logout");
+                $("#login").off('click').click(function() {
+                    $.ajax({
+                        url: 'main.php?function=logout',
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(response) {
+                            if(response.response == "login"){
+                                alert(response.response)
+                                window.location.href = 'index.html';   
+                            }else{
+                                $("#login").text("Login").attr("href", "login.html");
+                            }
+                            
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error fetching data:', error);
+                        }
+                    });
+                });     
 
-    //         $.ajax({
-    //             url: 'main.php?function=retdate',
-    //             type: 'GET',
-    //             dataType: 'json',
-    //             success: function(data) {
-    //                 const ddate = new Date(data.mindate);
-    //                 const ddate2 = new Date(data.mindate);
-    //                 ddate2.setDate(ddate2.getDate() + data.required_days);
-    //                 console.log(today);
-    //                 console.log(ddate);
-    //                 console.log(ddate2);
-    //                 if(ddate > today){
-    //                     $("#deployment_date").attr('min', today);
-    //                     $("#deployment_date").attr('max', today);
-    //                     console.log(today);
-    //                 }else{
-    //                     console.log(data.mindate);
-    //                 }
-    //             },
-    //             error: function(xhr, status, error) {
-    //                 console.error('Error fetching data:', error);
-    //             }
-    //         });
-    //     }else{
-    //         alert("please select number of days")
-    //     }
-    // });
+            }else{
+                $("#login").text("Login").attr("href", "login.html");
+            }
+            
+        },
+        error: function(xhr, status, error) {
+            console.error('Error fetching data:', error);
+        }
+    });
+    
+    $.ajax({
+        url:'main.php?function=disabledate',
+        method:'GET',
+        dataType:'json',
+        success: function(data){
+            console.log(data);
+            const disdate = data;
+            $('.datepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                todayHighlight: true,
+                datesDisabled: disdate,
+            });
+        },
+        error: function(xhr, status, error) {
+            console.error('Error fetching data:', error);
+        }
+    });
 
     $.ajax({
         url: 'main.php?function=fetchportal&from=deploymentdetails',

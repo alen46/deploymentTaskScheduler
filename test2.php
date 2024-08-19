@@ -10,10 +10,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $conn->prepare("SELECT required_days,username,deployment_date,portalname,purl FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users ON users.userid =  portal.portal_owner WHERE deployment.deployment_date BETWEEN :from AND :to ");
             $stmt->bindParam(':from', $from);
             $stmt->bindParam(':to', $to);
-        }elseif($_POST['type'] == 'user'){
+        }
+        elseif($_POST['type'] == 'user'){
             $usr = $_POST['usr'];
             $stmt = $conn->prepare("SELECT required_days,username,deployment_date,portalname,purl FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users ON users.userid =  portal.portal_owner WHERE users.userid = :usr ");
             $stmt->bindParam(':usr', $usr);
+        }
+        elseif($_POST['type'] == 'portal'){
+            $portl = $_POST['portl'];
+            $stmt = $conn->prepare("SELECT required_days,username,deployment_date,portalname,purl FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users ON users.userid =  portal.portal_owner WHERE portal.pid = :portl ");
+            $stmt->bindParam(':portl', $portl);
         }
 
         $stmt->execute();

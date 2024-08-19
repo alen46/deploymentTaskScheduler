@@ -60,10 +60,25 @@ else{
     }
     else if($_POST["type"] == "alldeployments"){
         $query = $conn->query("SELECT deployment_version as DeploymentVersion,deployment_date as DeploymentDate, deployment_note as DeploymentNote, required_days as RequiredDays,portalname as PortalName, purl as PortalURL, version as CurrentPortalVersion, pfeatures as PortalFeatures, username as PortalOwner FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users on portal.portal_owner = users.userid");
-    }elseif($_POST['type'] == 'user'){
+    }
+    elseif($_POST['type'] == 'user'){
         $usr = $_POST['usr'];
-        $query = $conn->prepare("SELECT deployment_version AS DeploymentVersion, deployment_date AS DeploymentDate, deployment_note AS DeploymentNote, required_days AS RequiredDays, portalname AS PortalName, purl AS PortalURL, version AS CurrentPortalVersion, pfeatures AS PortalFeatures, username AS PortalOwner FROM deployment INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users ON portal.portal_owner = users.userid WHERE users.userid = :usr");
-        $query->bindParam(':usr', $usr);
+        if( $usr == ''){
+            $query = $conn->prepare("SELECT deployment_version AS DeploymentVersion, deployment_date AS DeploymentDate, deployment_note AS DeploymentNote, required_days AS RequiredDays, portalname AS PortalName, purl AS PortalURL, version AS CurrentPortalVersion, pfeatures AS PortalFeatures, username AS PortalOwner FROM deployment INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users ON portal.portal_owner = users.userid WHERE users.userid in (SELECT users.userid from users)");
+        }else{
+            $query = $conn->prepare("SELECT deployment_version AS DeploymentVersion, deployment_date AS DeploymentDate, deployment_note AS DeploymentNote, required_days AS RequiredDays, portalname AS PortalName, purl AS PortalURL, version AS CurrentPortalVersion, pfeatures AS PortalFeatures, username AS PortalOwner FROM deployment INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users ON portal.portal_owner = users.userid WHERE users.userid = :usr");
+            $query->bindParam(':usr', $usr);
+        }        
+        $query->execute();
+    }
+    elseif($_POST['type'] == 'portal'){
+        $portl = $_POST['portl'];
+        if( $portl == ''){
+            $query = $conn->prepare("SELECT deployment_version AS DeploymentVersion, deployment_date AS DeploymentDate, deployment_note AS DeploymentNote, required_days AS RequiredDays, portalname AS PortalName, purl AS PortalURL, version AS CurrentPortalVersion, pfeatures AS PortalFeatures, username AS PortalOwner FROM deployment INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users ON portal.portal_owner = users.userid WHERE portal.pid in (SELECT portal.pid from portal)");
+        }else{
+            $query = $conn->prepare("SELECT deployment_version AS DeploymentVersion, deployment_date AS DeploymentDate, deployment_note AS DeploymentNote, required_days AS RequiredDays, portalname AS PortalName, purl AS PortalURL, version AS CurrentPortalVersion, pfeatures AS PortalFeatures, username AS PortalOwner FROM deployment INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users ON portal.portal_owner = users.userid WHERE portal.pid = :portl");
+            $query->bindParam(':portl', $portl);
+        }        
         $query->execute();
     }
     $rowNumber = 2;

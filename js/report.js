@@ -237,7 +237,7 @@ var url = getQueryParam('report');
                             <div class="form-group">
                             <label  for="usrsel">Portal URL</label>
                             <select class="form-control" id="usrsel" name="usrsel">
-                                <option value="" selected disabled>Select Portal URL</option>
+                                <option value="" selected disabled>Select User</option>
                             </select>
                             </div>
                             <input type="submit" class="submit-btn" value="View" id='usrbtn'>
@@ -245,7 +245,6 @@ var url = getQueryParam('report');
                         </div>`
 
         let usertbl =`
-        <input type="submit" class="submit-btn" style="background-color: grey;" value="Download" id='downloadbtn'>
         <div class="container-xl px-4 mt-4">
             <div style=" padding: 25px; padding-left: 10px; padding-right: 10px; background-color: aliceblue;" >
                 <table id="test" class="display" style="width:100%">
@@ -278,6 +277,7 @@ var url = getQueryParam('report');
                 console.error('Error fetching data:', error);
             }
         });
+
         $("#form").html(usersel);
         $("#table").html(usertbl);
         $("#usrbtn").click(()=>{
@@ -307,21 +307,114 @@ var url = getQueryParam('report');
             });
         });
         $("#downloadbtn").click(()=>{
-            if($("#usrsel")){
-                let x = $("#usrsel");
-            }else{
-                x = '';
-            }
 
+            let x = $("#usrsel").val();
             let usrdata ={
                 'type':'user',
                 'usr': x
-            }
+            };
+            console.log(usrdata);
             $.ajax({
                 url: `test3.php`,
                 type: 'POST',
                 dataType: 'json',
                 data: usrdata,
+                success: function(data) {
+                    var link = document.createElement('a');
+                    link.href = data.file;
+                    link.click();
+                }
+            });
+        });
+    }
+
+    if(url == 'portal'){
+        let psel = `<div class="form-container">
+                            <div class="form-group">
+                            <label  for="psel">Portal URL</label>
+                            <select class="form-control" id="psel" name="psel">
+                                <option value="" selected disabled>Select Portal</option>
+                            </select>
+                            </div>
+                            <input type="submit" class="submit-btn" value="View" id='pbtn'>
+                            <input type="submit" class="submit-btn" style="background-color: grey;" value="Download" id='downloadbtn'>
+                        </div>`
+
+        let ptbl =`
+        <div class="container-xl px-4 mt-4">
+            <div style=" padding: 25px; padding-left: 10px; padding-right: 10px; background-color: aliceblue;" >
+                <table id="test" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>Portal URL</th>
+                            <th>Portal Name</th>
+                            <th>Deployment Date</th>
+                            <th>Required Days</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>   
+        </div>`
+        $.ajax({
+            url: 'main.php?function=fetchportal&from=portl',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                var $select = $('#psel');
+                $.each(data, function(index, item) {
+                    $select.append($('<option>', {
+                        value: item.pid,
+                        text: item.purl
+                    }));
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching data:', error);
+            }
+        });
+
+        $("#form").html(psel);
+        $("#table").html(ptbl);
+        $("#pbtn").click(()=>{
+            let pdata ={
+                'type':'portal',
+                'portl':$("#psel").val(),
+            };
+            let table = $('#test').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "ajax": {
+                    "url": `test2.php`,
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": pdata,
+                    "dataSrc": ""
+                },
+                "columns": [
+                    {"data": "username"},
+                    {"data": "purl"},
+                    {"data": "portalname"},
+                    {"data": "deployment_date"},
+                    {"data": "required_days"}
+                ]
+            });
+        });
+        $("#downloadbtn").click(()=>{
+
+            let x = $("#psel").val();
+            let pdata ={
+                'type':'portal',
+                'portl': x
+            };
+            console.log(pdata);
+            $.ajax({
+                url: `test3.php`,
+                type: 'POST',
+                dataType: 'json',
+                data: pdata,
                 success: function(data) {
                     var link = document.createElement('a');
                     link.href = data.file;

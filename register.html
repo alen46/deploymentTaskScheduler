@@ -7,6 +7,7 @@
     <link href="css/bootstrap.min.css" rel="stylesheet" >
     <title>Deployment Task Scheduler</title>
     <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="js/navbar.js"></script>
     <script src="js/validation.js"></script>
     <script src="js/register.js"></script>
     <link rel="stylesheet" href="css/register.css">
@@ -78,17 +79,4 @@
                     </div>
         </main>         
 </body>
-<script>
-    $(document).ready(function(){
-        $(".hamburger").click(function(){
-            $(this).toggleClass("active");
-            $(".nav-menu").toggleClass("active");
-        });
-    
-            $(".nav-link").click(function(){
-            $(".hamburger").removeClass("active");
-            $(".nav-menu").removeClass("active");
-        });  
-    });
-</script>
 </html>

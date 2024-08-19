@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="js/jquery-3.7.1.min.js"></script>
+<link rel="stylesheet" href="css/datatables.css" />
+<script src="js/datatables.js"></script>
+<link rel="stylesheet" href="css/index.css">
+<link rel="stylesheet" href="css/deploymentdetails.css">
+<script src="js/edituser.js"></script>
+
+<style>
+    body{
+    margin-top:20px;
+    background-color:#f2f6fc;
+    color:#69707a;
+    display: block;
+    }
+    .form-container {
+    width: 95%;
+    }
+    /* From Uiverse.io by micaelgomestavares */ 
+.form {
+    display: inline-flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 350px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 20px;
+  position: relative;
+}
+
+.title {
+  font-size: 28px;
+  color: royalblue;
+  font-weight: 600;
+  letter-spacing: -1px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-left: 30px;
+}
+
+.title::before,.title::after {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  left: 0px;
+  background-color: royalblue;
+}
+
+.title::before {
+  width: 18px;
+  height: 18px;
+  background-color: royalblue;
+}
+
+.title::after {
+  width: 18px;
+  height: 18px;
+  animation: pulse 1s linear infinite;
+}
+
+.message, .signin {
+  color: rgba(88, 87, 87, 0.822);
+  font-size: 14px;
+}
+
+.signin {
+  text-align: center;
+}
+
+.signin a {
+  color: royalblue;
+}
+
+.signin a:hover {
+  text-decoration: underline royalblue;
+}
+
+.flex {
+  display: flex;
+  width: 100%;
+  gap: 6px;
+}
+
+.form label {
+  position: relative;
+}
+
+.form label .input {
+  width: 100%;
+  padding: 10px 10px 20px 10px;
+  outline: 0;
+  border: 1px solid rgba(105, 105, 105, 0.397);
+  border-radius: 10px;
+}
+
+.form label .input + span {
+  position: absolute;
+  left: 10px;
+  top: 15px;
+  color: grey;
+  font-size: 0.9em;
+  cursor: text;
+  transition: 0.3s ease;
+}
+
+.form label .input:placeholder-shown + span {
+  top: 15px;
+  font-size: 0.9em;
+}
+
+.form label .input:focus + span,.form label .input:valid + span {
+  top: 0px;
+  font-size: 0.7em;
+  font-weight: 600;
+}
+
+.form label .input:valid + span {
+  color: green;
+}
+
+.submit {
+  border: none;
+  outline: none;
+  background-color: royalblue;
+  padding: 10px;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 16px;
+  transform: .3s ease;
+}
+
+.submit:hover {
+  background-color: rgb(56, 90, 194);
+  cursor: pointer;
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(0.9);
+    opacity: 1;
+  }
+
+  to {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+</style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <a href="index.html" class="nav-logo">
+                <span class="text-logo">Deployment Task Scheduler</span>
+                <img src="img/d.png" alt="Logo" class="image-logo" >
+            </a>
+            <ul class="nav-menu">
+                <li class="nav-item" ><a class= "header__link" href="" id="login">Logout</a></li>
+              </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+    <div class="form-container">
+        <div class="form-group">
+        <label  for="usrsel">Select User</label>
+        <select class="form-control" id="usrsel" name="usrsel">
+            <option value="" selected disabled>Select User</option>
+        </select>
+        </div>
+        <input type="submit" class="submit-btn" value="View" id='usrbtn'>
+
+<form class="form" id="editusr">
+    <input type="hidden" name="id" id="id" value="">
+    <label>
+        <input class="input" type="text" placeholder="" required="" id="usrname" name="name">
+        <span>Name</span>
+    </label>
+    <div class="flex">
+    <label>
+        <input class="input" type="email" placeholder="" required="" id="usremail" name="email">
+        <span>Email</span>
+    </label>   
+    <label>
+        <input class="input" type="text" placeholder="" required="" id="usrphone" name="phone">
+        <span>Phone</span>
+    </label> 
+    </div>  
+    <label class="small mb-1" for="typesel">
+        <select class="form-control" id="typesel" name="type">
+            <option value="" selected disabled>Select Usertype</option>
+        </select>
+    </label>
+    <button class="submit">Submit</button>
+</form>
+</div>
+</body>
+</html>
