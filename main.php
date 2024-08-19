@@ -528,6 +528,27 @@ class Deployment{
         }
     }
 
+    public function emailcheck(){
+        require('conn.php');
+        try {
+            $sql = "SELECT email from users where email = :email";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":email", $_GET["email"]);
+            $stmt->execute();
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if (!empty($data)) {
+                header('Content-Type: application/json');
+                echo json_encode("ok");
+            } else {
+                echo json_encode(array("message" => "No data found"));
+            }
+        } catch(PDOException $e) {
+            echo json_encode(array("message" =>"Connection failed: " . $e->getMessage()));
+        }finally {
+            $conn = null;
+        }
+    }
+
 }
 
 try{
