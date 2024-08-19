@@ -6,6 +6,9 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
+
+$sheet->setTitle('Report');
+
 if($_POST['type'] == 'change'){
     $headers = [
         'A1' => 'Portal URL',
@@ -95,6 +98,11 @@ else{
         $rowNumber++;
     }
 }
+
+foreach (range('A', 'I') as $col) {
+    $sheet->getColumnDimension($col)->setAutoSize(true);
+}
+
 $writer = new Xlsx($spreadsheet);
 $datenow = new DateTime();
 $formattedDate = $datenow->format('Y_m_d');
