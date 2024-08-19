@@ -158,9 +158,9 @@ $(document).ready(function(){
             dataType: 'json',
             success: function(response) {
                 if(response.type != '100'){
-                    $("#card5, #card6, #card7, #card8").hide();
+                    $("#card5, #card6, #card7, #card8, #card10").hide();
                     if(response.type == '101' ){
-                    $("#card1, #card2, #card3, #card4, #card5, #card8, #card7").hide();
+                    $("#card1, #card2, #card3, #card4, #card5, #card8, #card7", "#card10").hide();
                     $("#card6").show();
                 }
                 }
@@ -205,7 +205,7 @@ $(document).ready(function(){
                     $("#notificationimg").attr('src','img/notification.png')
                     let msgContent = '';
                     data.forEach(element => {
-                        let x= `${element.portalname} (${element.purl}) deployment date is adjusted from ${element.old_date} to ${element.new_date} : ${element.info}  `
+                        let x= `${element.portalname} (${element.purl}) deployment date is changed to ${element.new_date} : ${element.info}  `
                         msgContent += x + '<hr>';
                     
                     });

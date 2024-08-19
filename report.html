@@ -183,7 +183,7 @@ $(document).ready(function(){
                 $("#notificationimg").attr('src','img/notification.png')
                 let msgContent = '';
                 data.forEach(element => {
-                    let x= `${element.portalname} (${element.purl}) deployment date is adjusted from ${element.old_date} to ${element.new_date} : ${element.info}  `
+                    let x= `${element.portalname} (${element.purl}) deployment date is changed to ${element.new_date} : ${element.info}  `
                     msgContent += x + '<br>';
                 
                 });

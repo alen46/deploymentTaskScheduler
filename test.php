@@ -91,4 +91,8 @@ function updateDeploymentDates($conn, $initialId) {
 }
 $initialId = $deploymentId;
 updateDeploymentDates($conn, $initialId);
+
+$qq = "DELETE t1 FROM changelog t1 INNER JOIN changelog t2 WHERE t1.deployment_id = t2.deployment_id AND t1.change_time = t2.change_time AND t1.log_id < t2.log_id;";
+$conn->query($qq);
+
 echo json_encode(array("response" => "Deployment dates have been updated."));
