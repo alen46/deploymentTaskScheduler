@@ -201,15 +201,59 @@ $(document).ready(function(){
             dataType: 'json',
             success: function(data) {
                 if(data.length > 0 ){
+                    let arr = [];
                     console.log(data);
-                    $("#notificationimg").attr('src','img/notification.png')
                     let msgContent = '';
                     data.forEach(element => {
                         let x= `${element.portalname} (${element.purl}) deployment date is changed to ${element.new_date} : ${element.info}  `
                         msgContent += x + '<hr>';
-                    
+                        if(element.view == 0){
+                            arr.push(element.log_id);
+                        }
                     });
-                    $("#msg").html(msgContent);
+                    if(arr.length > 0){
+                        $("#notificationimg").attr('src','img/notification.png')
+                    }
+                    function updatemsg(){
+                        arr.forEach(id=>{
+                            $.ajax({
+                                url: `main.php?function=readmessage&id=${id}`,
+                                type: 'GET',
+                                dataType: 'json',
+                                success: function(data){
+                                }
+                            })
+                        })
+                    }
+                    
+                        $("#msg").html(msgContent);
+                        notificationimg.addEventListener("click", function(){
+                            myPopup.classList.add("show");
+                            $("#notificationimg").attr('src','img/bell.png');
+                            
+                            updatemsg();
+                            
+                    });
+                        closePopup.addEventListener(
+                            "click",
+                            function () {
+                                myPopup.classList.remove(
+                                    "show"
+                                );
+                            }
+                        );
+                        window.addEventListener(
+                            "click",
+                            function (event) {
+                                if (event.target == myPopup) {
+                                    myPopup.classList.remove(
+                                        "show"
+                                    );
+                                }
+                            }
+                        );
+                    
+                    
                 }
             },
             error: function(xhr, status, error) {
@@ -217,30 +261,5 @@ $(document).ready(function(){
             }
         });
     });
-    notificationimg.addEventListener(
-                "click",
-                function () {
-                    myPopup.classList.add("show");
-                    $("#notificationimg").attr('src','img/bell.png')
-                }
-            );
-            closePopup.addEventListener(
-                "click",
-                function () {
-                    myPopup.classList.remove(
-                        "show"
-                    );
-                }
-            );
-            window.addEventListener(
-                "click",
-                function (event) {
-                    if (event.target == myPopup) {
-                        myPopup.classList.remove(
-                            "show"
-                        );
-                    }
-                }
-            );
 </script>
 </html>
