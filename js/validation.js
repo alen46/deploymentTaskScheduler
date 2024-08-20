@@ -15,23 +15,23 @@ $(document).ready(function () {
         phone.dispatchEvent(new Event('blur'));
     });
 
-    $("#email").keyup(function () {
-        let email = $("#email").val();
-        $.ajax({
-            url: `main.php?function=emailcheck&email=${email}`,
-            type: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                console.log(data);
-                if(data == 'ok'){
-                    emailError = false;
-                    $('#email').addClass("is-invalid");
-                    $("#emailerror").text("email alerady exist");
-                    $("#emailerror").show();
-                }
-            }
-        });
-    });
+    // $("#email").keyup(function () {
+    //     let email = $("#email").val();
+    //     $.ajax({
+    //         url: `main.php?function=emailcheck&email=${email}`,
+    //         type: 'GET',
+    //         dataType: 'json',
+    //         success: function(data) {
+    //             console.log(data);
+    //             if(data == 'ok'){
+    //                 emailError = false;
+    //                 $('#email').addClass("is-invalid");
+    //                 $("#emailerror").text("email alerady exist");
+    //                 $("#emailerror").show();
+    //             }
+    //         }
+    //     });
+    // });
 
     
     function validateUsername() {
@@ -55,7 +55,6 @@ $(document).ready(function () {
     $('#email').on('blur', function() {
             var regex = /^([_\-\.0-9a-zA-Z]+)@([_\-\.0-9a-zA-Z]+)\.([a-zA-Z]){2,7}$/;
             var emailValue = $(this).val();
-    
             if(regex.test(emailValue)) {
                 $(this).removeClass("is-invalid");
                 emailError = false; 
@@ -63,6 +62,21 @@ $(document).ready(function () {
                 $(this).addClass("is-invalid");
                 emailError = true; 
             }
+            let email = $("#email").val();
+            $.ajax({
+                url: `main.php?function=emailcheck&email=${email}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data);
+                    if(data == 'ok'){
+                        emailError = false;
+                        $('#email').addClass("is-invalid");
+                        $("#emailerror").text("email alerady exist");
+                        $("#emailerror").show();
+                    }
+                }
+            });
     });
 
 
@@ -122,8 +136,6 @@ $(document).ready(function () {
             confirmPasswordError = true;
         }
     }
-    
-
 
     $("#submitbtn").click(function () {
         validateUsername();
@@ -132,10 +144,7 @@ $(document).ready(function () {
         validateConfirmPassword();
         validatePassword();
         
-        if (
-            nameerror &&
-            emailError
-        ) {
+        if (nameerror && emailError ) {
             return true;
         } else {
             return false;
