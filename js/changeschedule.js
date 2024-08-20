@@ -11,47 +11,44 @@ $(document).ready(function(){
     });
 
     $.ajax({
-            url: 'main.php?function=checklogin',
-            type: 'GET',
-            dataType: 'json',
-            success: function(response) {
-                if(response.type != '100' && response.type != '102'){
-                    window.location.href = 'notfound.html';
-                }
-                if(response.response == "logout"){
-                    $("#login").text("Logout");
-                    $("#login").off('click').click(function() {
-                        $.ajax({
-                            url: 'main.php?function=logout',
-                            type: 'GET',
-                            dataType: 'json',
-                            success: function(response) {
-                                if(response.response == "login"){
-                                    alert(response.response)
-                                    window.location.href = 'index.html';   
-                                }else{
-                                    $("#login").text("Login").attr("href", "login.html");
-                                }
-                                
-                            },
-                            error: function(xhr, status, error) {
-                                console.error('Error fetching data:', error);
-                            }
-                        });
-                    });     
-
-                }else{
-                    $("#login").text("Login").attr("href", "login.html");
-                }
-                
-            },
-            error: function(xhr, status, error) {
-                console.error('Error fetching data:', error);
+        url: 'main.php?function=checklogin',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if(response.type != '100' && response.type != '102'){
+                window.location.href = 'notfound.html';
             }
-        });
+            if(response.response == "logout"){
+                $("#login").text("Logout");
+                $("#login").off('click').click(function() {
+                    $.ajax({
+                        url: 'main.php?function=logout',
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(response) {
+                            if(response.response == "login"){
+                                alert(response.response)
+                                window.location.href = 'index.html';   
+                            }else{
+                                $("#login").text("Login").attr("href", "login.html");
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error fetching data:', error);
+                        }
+                    });
+                });     
+            }else{
+                $("#login").text("Login").attr("href", "login.html");
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error fetching data:', error);
+        }
+    });
 
-        const today = new Date().toISOString().split('T')[0];
-        $('#new_date').attr('min', today);
+    const today = new Date().toISOString().split('T')[0];
+    $('#new_date').attr('min', today);
 
     $.ajax({
         url: 'main.php?function=fetchportal&from=changedeployment',
@@ -88,14 +85,10 @@ $(document).ready(function(){
             error: function(xhr, status, error) {
                 console.error('Error fetching data:', error);
             }
-        
+        });
     });
-});
-
-
 
     $('#changeschedule').on('submit', function(e) {
-    {
         e.preventDefault(e); 
         let formData = new FormData(this);
         formData.append('function',"changeschedule");
@@ -118,7 +111,5 @@ $(document).ready(function(){
             }
         });
         return false;
-    }
-
-}); 
+    }); 
 });

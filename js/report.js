@@ -195,6 +195,7 @@ var url = getQueryParam('report');
                 <table id="test" class="display" style="width:100%">
                     <thead>
                         <tr>
+                            <th>Change Date</th>
                             <th>Portal URL</th>
                             <th>Portal Name</th>
                             <th>Old Date</th>
@@ -218,6 +219,7 @@ var url = getQueryParam('report');
                 "dataSrc": ""
             },
             "columns": [
+                {"data": "ChangeDate"},
                 {"data": "PortalURL"},
                 {"data": "PortalName"},
                 {"data": "OldDate"},

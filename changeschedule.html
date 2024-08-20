@@ -30,7 +30,7 @@
     </header>
     <div class="form-container">
         <h1>Change Deployment Schedule</h1>
-        <form   id="changeschedule" onsubmit="addportal()" enctype="multipart/form-data">
+        <form id="changeschedule" enctype="multipart/form-data">
             <div class="form-row">
                 <div class="form-group">
                     <label  for="portal_url">Portal URL</label>
@@ -64,6 +64,7 @@
                 <textarea id="change_note" name="change_note" placeholder="Enter change reason" required></textarea>
             </div>
             <input type="submit" class="submit-btn" value="Save">
+            <input class="submit-btn" type="reset" id="resetbutton" value="reset" style="background-color: grey;">
         </form>
     </div>
 </body>

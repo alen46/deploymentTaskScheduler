@@ -15,13 +15,25 @@
     <script src="js/navbar.js"></script>
     <style>
         .bootstrap-datetimepicker-widget .weekend {
-  color: red;
-  /*Apply your color*/
-}
-.datepicker-days{
-    background-color: darkslategray;
-}
-
+        color: red;
+        }
+        .datepicker table tr td.disabled, .datepicker table tr td.disabled:hover {
+            background-color: grey;
+            cursor: not-allowed;
+            color: darkred;
+        }
+        body{
+            text-align: -webkit-center;
+        }
+        .datepicker table tr td, .datepicker table tr th {
+            width: 30px;
+            height: 30px;
+            background: lightgrey;
+            color: black;
+            text-align: center;
+            font-size: 14px;
+            border-radius: 4px;
+        }
     </style>
 </head>
 
@@ -45,7 +57,7 @@
 
     <div class="form-container">
         <h1>Deployment Details</h1>
-        <form   id="addportal" onsubmit="addportal()" enctype="multipart/form-data">
+        <form   id="deploymentdetails" enctype="multipart/form-data">
             <div class="form-row">
                 <div class="form-group">
                     <label  for="portal_url">Portal URL</label>
@@ -62,7 +74,7 @@
 
             <div class="form-group">
                 <label for="num_days">Number of Days</label>
-                <input type="number" id="num_days" name="num_days" placeholder="Enter number of days" required>
+                <input type="number" id="num_days" name="num_days" placeholder="Enter number of days" required min="1">
             </div>
 
             <div class="form-group">

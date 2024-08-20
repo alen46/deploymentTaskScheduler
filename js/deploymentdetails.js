@@ -21,18 +21,15 @@ $(document).ready(function(){
                             }else{
                                 $("#login").text("Login").attr("href", "login.html");
                             }
-                            
                         },
                         error: function(xhr, status, error) {
                             console.error('Error fetching data:', error);
                         }
                     });
                 });     
-
             }else{
                 $("#login").text("Login").attr("href", "login.html");
             }
-            
         },
         error: function(xhr, status, error) {
             console.error('Error fetching data:', error);
@@ -53,7 +50,7 @@ $(document).ready(function(){
                 datesDisabled: disdate,
                 startDate: "today",
                 adaptivePosition: true,
-                container: '.form-container', // or another relevant container
+                container: '.form-container', 
                 autoclose: true
             }).on('show', function(e) {
                 $('.datepicker').appendTo($(this).parent()); 
@@ -82,8 +79,7 @@ $(document).ready(function(){
         }
     });
 
-    $('#addportal').on('submit', function(e) {
-    {
+    $('#deploymentdetails').on('submit', function(e) {
         e.preventDefault(e); 
         let formData = new FormData(this);
         formData.append('function',"adddeployment");
@@ -98,7 +94,7 @@ $(document).ready(function(){
             success: function(response) { 
                 window.alert(response.response); 
                 console.log(response);
-                location.reload();
+                window.location.href = 'index.html';
             },
             error: function(xhr, textStatus, errorThrown){
                 alert("An error occurred: " + xhr.status + " " + xhr.statusText);
@@ -106,7 +102,5 @@ $(document).ready(function(){
             }
         });
         return false;
-        }
-
     });
 });

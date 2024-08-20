@@ -54,7 +54,6 @@ $(document).ready(function(){
     });
 
     $('#acceptbtn').on('click', function(e) {
-    {
         e.preventDefault(e);
         let formData = {
             'new_date':$("#change_date").val(),
@@ -71,12 +70,10 @@ $(document).ready(function(){
             url: "test.php",
             data: formData,
             dataType: "json",
-            // processData: false, 
-            // contentType: false, 
             success: function(response) { 
                 window.alert(response.response); 
                 console.log(response);
-               // location.reload();
+                window.location.href = 'viewalldeployments.html'
             },
             error: function(xhr, textStatus, errorThrown){
                 alert("An error occurred: " + xhr.status + " " + xhr.statusText);
@@ -84,11 +81,9 @@ $(document).ready(function(){
             }
         });
         return false;
-    }
     }); 
 
     $('#rejectbtn').on('click', function(e) {
-        {
             e.preventDefault(e);
             let formData = {
                 'status':"Rejected",
@@ -102,12 +97,10 @@ $(document).ready(function(){
                 url: "main.php",
                 data: formData,
                 dataType: "json",
-                // processData: false, 
-                // contentType: false, 
                 success: function(response) { 
                     window.alert(response.response); 
                     console.log(response);
-                   // location.reload();
+                    window.location.href = 'viewalldeployments.html'
                 },
                 error: function(xhr, textStatus, errorThrown){
                     alert("An error occurred: " + xhr.status + " " + xhr.statusText);
@@ -115,9 +108,6 @@ $(document).ready(function(){
                 }
             });
             return false;
-        } 
     }); 
-
-
 });
 

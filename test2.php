@@ -40,7 +40,7 @@ elseif ($_SERVER["REQUEST_METHOD"] === "GET") {
             $stmt = $conn->prepare("SELECT required_days,username,deployment_date,portalname,purl FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users ON users.userid = portal.portal_owner;");
         }
         elseif($_GET['type'] == 'change'){
-            $stmt = $conn->prepare("SELECT portal.portalname as PortalName, portal.purl PortalURL, changelog.old_date as OldDate, changelog.new_date as NewDate, changelog.info AS ChangeInfo FROM `changelog` INNER JOIN deployment ON changelog.deployment_id = deployment.deployment_id INNER JOIN portal on portal.pid = deployment.portal_id;");
+            $stmt = $conn->prepare("SELECT changelog.change_date as ChangeDate, portal.portalname as PortalName, portal.purl PortalURL, changelog.old_date as OldDate, changelog.new_date as NewDate, changelog.info AS ChangeInfo FROM `changelog` INNER JOIN deployment ON changelog.deployment_id = deployment.deployment_id INNER JOIN portal on portal.pid = deployment.portal_id;");
         }
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -5,50 +5,50 @@ $(document).ready(function(){
         $(".nav-menu").toggleClass("active");
     });
     
-        $(".nav-link").click(function(){
+    $(".nav-link").click(function(){
         $(".hamburger").removeClass("active");
         $(".nav-menu").removeClass("active");
     });
     
     $.ajax({
-            url: 'main.php?function=checklogin',
-            type: 'GET',
-            dataType: 'json',
-            success: function(response) {
-                if(response.type != '100'){
-                    window.location.href = 'notfound.html';
-                }
-                if(response.response == "logout"){
-                    $("#login").text("Logout");
-                    $("#login").off('click').click(function() {
-                        $.ajax({
-                            url: 'main.php?function=logout',
-                            type: 'GET',
-                            dataType: 'json',
-                            success: function(response) {
-                                if(response.response == "login"){
-                                    alert(response.response)
-                                    window.location.href = 'index.html';   
-                                }else{
-                                    $("#login").text("Login").attr("href", "login.html");
-                                }
-                                
-                            },
-                            error: function(xhr, status, error) {
-                                console.error('Error fetching data:', error);
-                            }
-                        });
-                    });     
-    
-                }else{
-                    $("#login").text("Login").attr("href", "login.html");
-                }
-                
-            },
-            error: function(xhr, status, error) {
-                console.error('Error fetching data:', error);
+        url: 'main.php?function=checklogin',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if(response.type != '100'){
+                window.location.href = 'notfound.html';
             }
-        });
+            if(response.response == "logout"){
+                $("#login").text("Logout");
+                $("#login").off('click').click(function() {
+                    $.ajax({
+                        url: 'main.php?function=logout',
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(response) {
+                            if(response.response == "login"){
+                                alert(response.response)
+                                window.location.href = 'index.html';   
+                            }else{
+                                $("#login").text("Login").attr("href", "login.html");
+                            }
+                            
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error fetching data:', error);
+                        }
+                    });
+                });     
+
+            }else{
+                $("#login").text("Login").attr("href", "login.html");
+            }
+            
+        },
+        error: function(xhr, status, error) {
+            console.error('Error fetching data:', error);
+        }
+    });
     
         const today = new Date().toISOString().split('T')[0];
         $('#deployment_date').attr('min', today);
@@ -86,45 +86,50 @@ $(document).ready(function(){
                         $("#username").val(data.username);
                         $("#portal_id").val(data.portal_id);
                         $("#change_date").val(data.new_date);
+                        ddate(data.deployment_date, data.deployment_id);
+                        function ddate(dte, did){
+                            $('#deployment_date').change(()=>{
+                                console.log(dte);
+                                $('#editdeployment').on('submit', function(e) {
+                                    e.preventDefault(e); 
+                                    let formData = new FormData(this);
+                                    if(dte != $('#deployment_date').val()){
+                                    formData.append('oldDate',dte)
+                                    formData.append('id', did)
+                                    }
+                                    formData.append('function', 'adminedit')
+                                    console.log(formData);
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "main.php",
+                                        data: formData,
+                                        dataType: "json",
+                                        processData: false, 
+                                        contentType: false, 
+                                        success: function(response) { 
+                                            alert(response.message)
+                                            console.log(response);
+                                            window.location.href = 'index.html'
+                                        },
+                                        error: function(xhr, textStatus, errorThrown){
+                                            alert("An error occurred: " + xhr.status + " " + xhr.statusText);
+                                            console.error("Error:", xhr, textStatus, errorThrown);
+                                        }
+                                    });
+                                });
+                            })
+                        }
                     },
                     error: function(xhr, status, error) {
                         console.error('Error fetching data:', error);
                     }     
                 });
             });
-        
-            $('#editdeployment').on('submit', function(e) {
-                    e.preventDefault(e); 
-                    let formData = new FormData(this);
-                    formData.append('function',"editdeployment");
-                    console.log(formData);
-                    $.ajax({
-                        type: "POST",
-                        url: "main.php",
-                        data: formData,
-                        dataType: "json",
-                        processData: false, 
-                        contentType: false, 
-                        success: function(response) { 
-                            window.alert(response.message); 
-                            console.log(response);
-                            //location.reload();
-                        },
-                        error: function(xhr, textStatus, errorThrown){
-                            alert("An error occurred: " + xhr.status + " " + xhr.statusText);
-                            console.error("Error:", xhr, textStatus, errorThrown);
-                        }
-                    });
-                    return false;
-            });
         },
         error: function(xhr, status, error) {
             console.error('Error fetching data:', error);
         }
     });
-
-
     
-
 });
 

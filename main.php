@@ -257,14 +257,13 @@ class Deployment{
                     $sql->bindParam(':portal_version',$portal_version);
                     $sql->bindParam(':portal_features',$portal_features);
                     $sql->execute();
-                    echo json_encode(array("response" =>$portal_name." inserted successfully"));
+                    echo json_encode(array("response" =>$portal_name." Portal Inserted Successfully"));
                 }else{
                     echo json_encode(array("response" =>"No Data Recieved"));
                 }
             }else{
                 echo json_encode(array("response"=> "Login Error"));
             }
-            
             $conn = null;
         } catch (PDOException $e) {
             echo json_encode(array("response" => "Database error: " . $e->getMessage()));
@@ -288,6 +287,7 @@ class Deployment{
                 if (isset($_FILES['deployment_plan']) && $_FILES['deployment_plan']['error'] == 0) {
                     $uploadDir = 'uploads/'; 
                     $uploadFile = $uploadDir . basename($_FILES['deployment_plan']['name']);
+                    // create directory if not present 0777 indicates read write execute permission
                     if (!is_dir($uploadDir)) {
                         mkdir($uploadDir, 0777, true);
                     }
@@ -300,9 +300,9 @@ class Deployment{
                             $sql->bindParam(':deployment_note',$deployment_note);
                             $sql->bindParam(':deployment_plan',$uploadFile);
                             $sql->execute();
-                            echo json_encode(array("response" =>"Deployment Details added successfully"));
+                            echo json_encode(array("response" =>"Deployment Details Added Successfully"));
                     } else {
-                        echo json_encode(array("response"=>"file error"));
+                        echo json_encode(array("response"=>"File Error"));
                     }
                 }
             }
@@ -335,7 +335,7 @@ class Deployment{
                 $sql->bindParam(':userid',$userid);
                 $sql->bindParam(':change_note',$change_note);
                 $sql->execute();
-                echo json_encode(array("response" =>"Schedule change added successfully"));
+                echo json_encode(array("response" =>"Schedule Change Added Successfully"));
             }
             else{
                 echo json_encode(array("response" =>"No Data Recieved"));
@@ -350,7 +350,6 @@ class Deployment{
         }
     }
 
-
     public function datatable(){
         require('conn.php');
         try {
@@ -364,6 +363,48 @@ class Deployment{
             } else {
                 echo json_encode(array("message" => "No data found"));
             }
+        }catch(PDOException $e) {
+            echo "Connection failed: " . $e->getMessage();
+        }finally {
+            $conn = null;
+        }
+    }
+
+    public function adminedit(){
+        require('conn.php');
+        try{
+            if(isset($_POST['oldDate']) && isset($_POST['id']) ){
+                $id = $_POST['id'];
+                $olddate = $_POST['oldDate'];
+                $newdate = $_POST['deployment_date'];
+                $sqlInsertChangelog2 = "INSERT INTO `changelog`(`deployment_id`, `old_date`, `new_date`, `change_date`, `change_time`, `info`) VALUES  (:deploymentId, :oldDate, :newDate,:changedate, :changetime, :changeDescription)";
+                $stmtChangelog2 = $conn->prepare($sqlInsertChangelog2);
+                $stmtChangelog2->bindParam(':deploymentId', $id);
+                $stmtChangelog2->bindParam(':oldDate', $olddate);
+                $stmtChangelog2->bindParam(':newDate', $newdate);
+                $stmtChangelog2->bindValue(':changeDescription', 'adjusted by admin');
+                $datenow = new DateTime();
+                $formattedDate = $datenow->format('Y-m-d');
+                $timenow = new DateTime();
+                $formattedTime = $timenow->format('H:i:s');
+                $stmtChangelog2->bindParam(':changedate', $formattedDate);
+                $stmtChangelog2->bindParam(':changetime', $formattedTime);
+                $stmtChangelog2->execute();
+            }
+            $stmt = $conn->prepare("UPDATE `deployment` SET `deployment_version`=:dversion,`deployment_date`=:ddate,`required_days`=:rdays,`deployment_note`=:dnote WHERE deployment.portal_id = :pid");
+            $stmt->bindParam(":dversion", $_POST['deployment_version']);
+            $stmt->bindParam(":ddate", $_POST['deployment_date']);
+            $stmt->bindParam(":rdays", $_POST['days']);
+            $stmt->bindParam(":dnote", $_POST['new_features']);
+            $stmt->bindParam(":pid", $_POST['portal_id']);
+            $stmt->execute();
+            $stmt2 = $conn->prepare("UPDATE `portal` SET `portalname`=:pname ,`version`=:pversion,`pfeatures`=:pfeatures WHERE portal.pid  = :pid");
+            $stmt2->bindParam(":pname", $_POST['portal_name']);
+            $stmt2->bindParam(":pversion", $_POST['current_version']);
+            $stmt2->bindParam(":pfeatures", $_POST['portal_features']);
+            $stmt2->bindParam(":pid", $_POST['portal_id']);
+            $stmt2->execute();
+            echo json_encode(array("message" => "Data Updated"));
         }catch(PDOException $e) {
             echo "Connection failed: " . $e->getMessage();
         }finally {
@@ -398,7 +439,7 @@ class Deployment{
             if($_GET['from'] == 'schedule'){
                 $sql = "SELECT deployment_version,deployment_date, deployment_note, required_days,portalname, purl, version, pfeatures, new_date, user_note, username, deployment_plan, schhedulechange.deployment_id FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN schhedulechange on schhedulechange.deployment_id = deployment.deployment_id INNER JOIN users on schhedulechange.user_id = users.userid where purl = :purl";
             }elseif($_GET["from"] == "deployment"){
-                $sql = "SELECT deployment_version,deployment_date, deployment_note, required_days,portalname, purl, version, pfeatures, username, deployment_plan, portal_id FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users on portal.portal_owner = users.userid where purl = :purl ";
+                $sql = "SELECT deployment_id,deployment_version,deployment_date, deployment_note, required_days,portalname, purl, version, pfeatures, username, deployment_plan, portal_id FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users on portal.portal_owner = users.userid where purl = :purl ";
             }
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":purl", $_GET['purl']);
@@ -487,33 +528,6 @@ class Deployment{
             $stmt->bindParam(":id", $_GET['id']);
             $stmt->execute();
             echo json_encode("success");
-        }catch (PDOException $e) {
-            echo json_encode(array("response" => "Database error: " . $e->getMessage()));
-        } catch (Exception $e) {
-            echo json_encode(array("response" => "General error: " . $e->getMessage()));
-        }finally{
-            $conn = null;
-        }
-    }
-
-    public function editdeployment(){
-        require("conn.php");
-        session_start();
-        try{
-            $stmt = $conn->prepare("UPDATE `deployment` SET `deployment_version`=:dversion,`deployment_date`=:ddate,`required_days`=:rdays,`deployment_note`=:dnote WHERE deployment.portal_id = :pid");
-            $stmt->bindParam(":dversion", $_POST['deployment_version']);
-            $stmt->bindParam(":ddate", $_POST['deployment_date']);
-            $stmt->bindParam(":rdays", $_POST['days']);
-            $stmt->bindParam(":dnote", $_POST['new_features']);
-            $stmt->bindParam(":pid", $_POST['portal_id']);
-            $stmt->execute();
-            $stmt2 = $conn->prepare("UPDATE `portal` SET `portalname`=:pname ,`version`=:pversion,`pfeatures`=:pfeatures WHERE portal.pid  = :pid");
-            $stmt2->bindParam(":pname", $_POST['portal_name']);
-            $stmt2->bindParam(":pversion", $_POST['current_version']);
-            $stmt2->bindParam(":pfeatures", $_POST['portal_features']);
-            $stmt2->bindParam(":pid", $_POST['portal_id']);
-            $stmt2->execute();
-            echo json_encode(array("message" => "Data Updated"));
         }catch (PDOException $e) {
             echo json_encode(array("response" => "Database error: " . $e->getMessage()));
         } catch (Exception $e) {

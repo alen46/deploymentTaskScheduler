@@ -14,29 +14,24 @@
     color: #333;
     border: 1px solid #ccc;
     border-radius: 5px;
-    appearance: none; /* Remove default arrow */
-    -webkit-appearance: none; /* Remove default arrow in Safari */
-    -moz-appearance: none; /* Remove default arrow in Firefox */
+    appearance: none; 
+    -webkit-appearance: none; 
+    -moz-appearance: none; 
 }
 
-/* Adding a custom arrow icon */
 select::after {
-    content: '\25BC'; /* Downward arrow icon */
+    content: '\25BC'; 
     position: absolute;
     right: 10px;
     top: 50%;
     transform: translateY(-50%);
     pointer-events: none;
 }
-
-/* Container for select box */
 .select-container {
     position: relative;
     display: inline-block;
     width: 100%;
 }
-
-/* Style for the select box on focus */
 select:focus {
     outline: none;
     border-color: #007bff;
@@ -53,7 +48,6 @@ select:focus {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
-
 .submit-btn:hover {
     background-color: #0056b3;
 }

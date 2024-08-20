@@ -24,7 +24,7 @@ if($_POST['type'] == 'change'){
     foreach ($headers as $cell => $header) {
         $sheet->setCellValue($cell, $header);
     }
-    $query = $conn->query("SELECT users.username PortalOwner, portal.portalname as PortalName, portal.purl PortalURL, changelog.old_date as OldDate, changelog.new_date as NewDate, changelog.change_date as ChangeDate, changelog.change_time as ChangeTime, changelog.info AS ChangeInfo FROM `changelog` INNER JOIN deployment ON changelog.deployment_id = deployment.deployment_id INNER JOIN portal on portal.pid = deployment.portal_id INNER JOIN users on portal.portal_owner = users.userid ORDER BY new_date;");
+    $query = $conn->query("SELECT users.username PortalOwner, portal.portalname as PortalName, portal.purl PortalURL, changelog.old_date as OldDate, changelog.new_date as NewDate, changelog.change_date as ChangeDate, changelog.change_time as ChangeTime, changelog.info AS ChangeInfo FROM `changelog` INNER JOIN deployment ON changelog.deployment_id = deployment.deployment_id INNER JOIN portal on portal.pid = deployment.portal_id INNER JOIN users on portal.portal_owner = users.userid ORDER BY change_date;");
     $rowNumber = 2; 
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $sheet->setCellValue('A' . $rowNumber, $row['PortalURL']);
