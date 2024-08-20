@@ -77,7 +77,7 @@ var url = getQueryParam('report');
         $("#form").html(datesel);
         $("#table").html(datetable);
         $("#datebtn").click(()=>{
-            if($("#from").val() == '' && $("#to").val() ==''){
+            if($("#from").val() == '' || $("#to").val() ==''){
                 alert("Select Dates")
             }
             else{
@@ -109,7 +109,7 @@ var url = getQueryParam('report');
             }
             })
                 $("#downloadbtn").click(()=>{
-                    if($("#from").val() == '' && $("#to").val() ==''){
+                    if($("#from").val() == '' || $("#to").val() ==''){
                         alert("Select Dates")
                     }
                     else{

@@ -466,7 +466,7 @@ class Deployment{
         require("conn.php");
         session_start();
         try{
-            $stmt = $conn->prepare("select changelog.old_date,changelog.new_date,changelog.change_date,changelog.change_time,changelog.info, portal.portalname,portal.purl,users.username FROM `changelog` INNER JOIN deployment on changelog.deployment_id = deployment.deployment_id INNER JOIN portal on portal.pid =deployment.portal_id INNER join  users on portal.portal_owner = users.userid where users.userid = :id");
+            $stmt = $conn->prepare("select changelog.log_id, changelog.old_date,changelog.new_date,changelog.change_date,changelog.change_time,changelog.info, portal.portalname,portal.purl,users.username FROM `changelog` INNER JOIN deployment on changelog.deployment_id = deployment.deployment_id INNER JOIN portal on portal.pid =deployment.portal_id INNER join  users on portal.portal_owner = users.userid where users.userid = :id");
             $stmt->bindParam(":id", $_SESSION['userid']);
             $stmt->execute();
             $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
