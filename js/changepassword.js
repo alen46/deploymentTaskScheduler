@@ -13,12 +13,10 @@ $(document).ready(function(){
             url: "main.php",
             data: formData,
             dataType: "json",
-            // processData: false, 
-            // contentType: false, 
             success: function(response) { 
                 window.alert(response.response); 
                 console.log(response);
-                //window.location.href = 'index.html';
+                window.location.href = 'index.html';
             },
             error: function(xhr, textStatus, errorThrown){
                 alert("An error occurred: " + xhr.status + " " + xhr.statusText);

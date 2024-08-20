@@ -101,7 +101,7 @@ class Deployment{
                     }
                 }
                 else if($_GET['from'] == 'usr'){
-                    $sql = "SELECT * FROM users";
+                    $sql = "SELECT * FROM users where userid not in (10000)";
                     $stmt = $conn->prepare($sql);
                 }
                 else if($_GET['from'] == 'portl'){

@@ -87,7 +87,7 @@ $(document).ready(function(){
                     success: function(response) { 
                         window.alert(response.message); 
                         console.log(response);
-                        //location.reload();
+                        window.location.href = 'index.html';
                     },
                     error: function(xhr, textStatus, errorThrown){
                         alert("An error occurred: " + xhr.status + " " + xhr.statusText);
