@@ -222,7 +222,7 @@ class Deployment{
                     $welcome = "Welcome ".$user['username'];
                     echo json_encode(array("response" =>$welcome));
                 } else {
-                    echo json_encode(array("response" =>"Email or Password Incorrect "));
+                    echo json_encode(array("response" =>"Email or Password Incorrect"));
                 }
             }
             else{

@@ -7,9 +7,10 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 
-$sheet->setTitle('Report');
+// $sheet->setTitle('Report');
 
 if($_POST['type'] == 'change'){
+    $sheet->setTitle('All Changes');
     $headers = [
         'A1' => 'Portal URL',
         'B1' => 'Portal Name',
@@ -56,6 +57,7 @@ else{
     if($_POST['type'] == 'date'){
         $from = $_POST['from'];
         $to = $_POST['to'];
+        $sheet->setTitle('Date - '. $from .'--'. $to);
         $query = $conn->prepare("SELECT deployment_version AS DeploymentVersion, deployment_date AS DeploymentDate, deployment_note AS DeploymentNote, required_days AS RequiredDays, portalname AS PortalName, purl AS PortalURL, version AS CurrentPortalVersion, pfeatures AS PortalFeatures, username AS PortalOwner FROM deployment INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users ON portal.portal_owner = users.userid WHERE deployment_date BETWEEN :from AND :to ORDER BY `DeploymentDate` DESC;");
         $query->bindParam(':from', $from);
         $query->bindParam(':to', $to);
@@ -66,6 +68,7 @@ else{
     }
     elseif($_POST['type'] == 'user'){
         $usr = $_POST['usr'];
+        $sheet->setTitle('Report - '.$usr);
         if( $usr == ''){
             $query = $conn->prepare("SELECT deployment_version AS DeploymentVersion, deployment_date AS DeploymentDate, deployment_note AS DeploymentNote, required_days AS RequiredDays, portalname AS PortalName, purl AS PortalURL, version AS CurrentPortalVersion, pfeatures AS PortalFeatures, username AS PortalOwner FROM deployment INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users ON portal.portal_owner = users.userid WHERE users.userid in (SELECT users.userid from users)");
         }else{
@@ -76,6 +79,7 @@ else{
     }
     elseif($_POST['type'] == 'portal'){
         $portl = $_POST['portl'];
+        $sheet->setTitle('Report - '. $portl);
         if( $portl == ''){
             $query = $conn->prepare("SELECT deployment_version AS DeploymentVersion, deployment_date AS DeploymentDate, deployment_note AS DeploymentNote, required_days AS RequiredDays, portalname AS PortalName, purl AS PortalURL, version AS CurrentPortalVersion, pfeatures AS PortalFeatures, username AS PortalOwner FROM deployment INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users ON portal.portal_owner = users.userid WHERE portal.pid in (SELECT portal.pid from portal)");
         }else{

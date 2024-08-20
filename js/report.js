@@ -77,49 +77,60 @@ var url = getQueryParam('report');
         $("#form").html(datesel);
         $("#table").html(datetable);
         $("#datebtn").click(()=>{
-            let date ={
-                'type':'date',
-                'from':$("#from").val(),
-                'to':$("#to").val()
-            };
-            let table = $('#test').DataTable({
-                "paging": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "ajax": {
-                    "url": `test2.php`,
-                    "type": "POST",
-                    "data": date,
-                    "datatype": "json",
-                    "dataSrc": ""
-                },
-                "columns": [
-                    {"data": "purl"},
-                    {"data": "portalname"},
-                    {"data": "deployment_date"},
-                    {"data": "username"},
-                    {"data": "required_days"}
-                ]
-            });
-        })
-        $("#downloadbtn").click(()=>{
-            let date ={
-                'type':'date',
-                'from':$("#from").val(),
-                'to':$("#to").val()
-            };
-            $.ajax({
-                url: `test3.php`,
-                type: 'POST',
-                dataType: 'json',
-                data: date,
-                success: function(data) {
-                    var link = document.createElement('a');
-                    link.href = data.file;
-                    link.click();
-                }});
-        });
+            if($("#from").val() == '' && $("#to").val() ==''){
+                alert("Select Dates")
+            }
+            else{
+                let date ={
+                    'type':'date',
+                    'from':$("#from").val(),
+                    'to':$("#to").val()
+                };
+                let table = $('#test').DataTable({
+                    "paging": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "ajax": {
+                        "url": `test2.php`,
+                        "type": "POST",
+                        "data": date,
+                        "datatype": "json",
+                        "dataSrc": ""
+                    },
+                    "columns": [
+                        {"data": "purl"},
+                        {"data": "portalname"},
+                        {"data": "deployment_date"},
+                        {"data": "username"},
+                        {"data": "required_days"}
+                    ]
+                });
+            }
+            })
+                $("#downloadbtn").click(()=>{
+                    if($("#from").val() == '' && $("#to").val() ==''){
+                        alert("Select Dates")
+                    }
+                    else{
+                        let date ={
+                            'type':'date',
+                            'from':$("#from").val(),
+                            'to':$("#to").val()
+                        };
+                        $.ajax({
+                            url: `test3.php`,
+                            type: 'POST',
+                            dataType: 'json',
+                            data: date,
+                            success: function(data) {
+                                var link = document.createElement('a');
+                                link.href = data.file;
+                                link.click();
+                            }
+                        });
+                    }
+                });    
     }
 
     if(url == 'alldeployments'){
@@ -235,7 +246,7 @@ var url = getQueryParam('report');
     if(url == 'user'){
         let usersel = `<div class="form-container">
                             <div class="form-group">
-                            <label  for="usrsel">Portal URL</label>
+                            <label  for="usrsel">Select User</label>
                             <select class="form-control" id="usrsel" name="usrsel">
                                 <option value="" selected disabled>Select User</option>
                             </select>
@@ -281,57 +292,69 @@ var url = getQueryParam('report');
         $("#form").html(usersel);
         $("#table").html(usertbl);
         $("#usrbtn").click(()=>{
-            let usrdata ={
-                'type':'user',
-                'usr':$("#usrsel").val(),
-            };
-            let table = $('#test').DataTable({
-                "paging": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "ajax": {
-                    "url": `test2.php`,
-                    "type": "POST",
-                    "datatype": "json",
-                    "data": usrdata,
-                    "dataSrc": ""
-                },
-                "columns": [
-                    {"data": "username"},
-                    {"data": "purl"},
-                    {"data": "portalname"},
-                    {"data": "deployment_date"},
-                    {"data": "required_days"}
-                ]
-            });
+            console.log("user val : " + $("#usrsel").val())
+            if($("#usrsel").val() == null){
+                alert("select user")
+            }
+            else{
+                let usrdata ={
+                    'type':'user',
+                    'usr':$("#usrsel").val(),
+                };
+                let table = $('#test').DataTable({
+                    "paging": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "ajax": {
+                        "url": `test2.php`,
+                        "type": "POST",
+                        "datatype": "json",
+                        "data": usrdata,
+                        "dataSrc": ""
+                    },
+                    "columns": [
+                        {"data": "username"},
+                        {"data": "purl"},
+                        {"data": "portalname"},
+                        {"data": "deployment_date"},
+                        {"data": "required_days"}
+                    ]
+                });
+            }
+            
         });
+        
         $("#downloadbtn").click(()=>{
-
-            let x = $("#usrsel").val();
-            let usrdata ={
-                'type':'user',
-                'usr': x
-            };
-            console.log(usrdata);
-            $.ajax({
-                url: `test3.php`,
-                type: 'POST',
-                dataType: 'json',
-                data: usrdata,
-                success: function(data) {
-                    var link = document.createElement('a');
-                    link.href = data.file;
-                    link.click();
-                }
-            });
+            if($("#usrsel").val() == null){
+                alert("select user")
+            }
+            else{
+                let x = $("#usrsel").val();
+                let usrdata ={
+                    'type':'user',
+                    'usr': x
+                };
+                console.log(usrdata);
+                $.ajax({
+                    url: `test3.php`,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: usrdata,
+                    success: function(data) {
+                        var link = document.createElement('a');
+                        link.href = data.file;
+                        link.click();
+                    }
+                });
+            }
         });
     }
 
     if(url == 'portal'){
         let psel = `<div class="form-container">
                             <div class="form-group">
-                            <label  for="psel">Portal URL</label>
+                            <label  for="psel"Select Portal</label>
                             <select class="form-control" id="psel" name="psel">
                                 <option value="" selected disabled>Select Portal</option>
                             </select>
@@ -377,50 +400,59 @@ var url = getQueryParam('report');
         $("#form").html(psel);
         $("#table").html(ptbl);
         $("#pbtn").click(()=>{
-            let pdata ={
-                'type':'portal',
-                'portl':$("#psel").val(),
-            };
-            let table = $('#test').DataTable({
-                "paging": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "ajax": {
-                    "url": `test2.php`,
-                    "type": "POST",
-                    "datatype": "json",
-                    "data": pdata,
-                    "dataSrc": ""
-                },
-                "columns": [
-                    {"data": "username"},
-                    {"data": "purl"},
-                    {"data": "portalname"},
-                    {"data": "deployment_date"},
-                    {"data": "required_days"}
-                ]
-            });
+            if($("#psel").val() == null){
+                alert("select portal")
+            }
+            else{
+                let pdata ={
+                    'type':'portal',
+                    'portl':$("#psel").val(),
+                };
+                let table = $('#test').DataTable({
+                    "paging": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "ajax": {
+                        "url": `test2.php`,
+                        "type": "POST",
+                        "datatype": "json",
+                        "data": pdata,
+                        "dataSrc": ""
+                    },
+                    "columns": [
+                        {"data": "username"},
+                        {"data": "purl"},
+                        {"data": "portalname"},
+                        {"data": "deployment_date"},
+                        {"data": "required_days"}
+                    ]
+                });
+            }
         });
         $("#downloadbtn").click(()=>{
-
-            let x = $("#psel").val();
-            let pdata ={
-                'type':'portal',
-                'portl': x
-            };
-            console.log(pdata);
-            $.ajax({
-                url: `test3.php`,
-                type: 'POST',
-                dataType: 'json',
-                data: pdata,
-                success: function(data) {
-                    var link = document.createElement('a');
-                    link.href = data.file;
-                    link.click();
-                }
-            });
+            if($("#psel").val() == null){
+                alert("select user")
+            }
+            else{
+                let x = $("#psel").val();
+                let pdata ={
+                    'type':'portal',
+                    'portl': x
+                };
+                console.log(pdata);
+                $.ajax({
+                    url: `test3.php`,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: pdata,
+                    success: function(data) {
+                        var link = document.createElement('a');
+                        link.href = data.file;
+                        link.click();
+                    }
+                });
+            }
         });
     }
 });

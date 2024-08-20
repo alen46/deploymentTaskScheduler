@@ -15,9 +15,14 @@ $(document).ready(function(){
             processData: false, 
             contentType: false, 
             success: function(response) { 
-                window.alert(response.response); 
                 console.log(response);
-                window.location.href = 'index.html';
+                if(response.response == "Email or Password Incorrect"){
+                    location.reload();
+                }
+                else{
+                    window.alert(response.response); 
+                    window.location.href = 'index.html';
+                } 
             },
             error: function(xhr, textStatus, errorThrown){
                 alert("An error occurred: " + xhr.status + " " + xhr.statusText);
