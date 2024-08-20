@@ -51,6 +51,12 @@ $(document).ready(function(){
                 autoclose: true,
                 todayHighlight: true,
                 datesDisabled: disdate,
+                startDate: "today",
+                adaptivePosition: true,
+                container: '.form-container', // or another relevant container
+                autoclose: true
+            }).on('show', function(e) {
+                $('.datepicker').appendTo($(this).parent()); 
             });
         },
         error: function(xhr, status, error) {

@@ -260,6 +260,29 @@ $(document).ready(function(){
                 console.error('Error fetching data:', error);
             }
         });
+        notificationimg.addEventListener("click", function(){
+                            myPopup.classList.add("show");
+                            $("#notificationimg").attr('src','img/bell.png');
+                    });
+                        closePopup.addEventListener(
+                            "click",
+                            function () {
+                                myPopup.classList.remove(
+                                    "show"
+                                );
+                            }
+                        );
+                        window.addEventListener(
+                            "click",
+                            function (event) {
+                                if (event.target == myPopup) {
+                                    myPopup.classList.remove(
+                                        "show"
+                                    );
+                                }
+                            }
+                        );
+        
     });
 </script>
 </html>

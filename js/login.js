@@ -17,6 +17,7 @@ $(document).ready(function(){
             success: function(response) { 
                 console.log(response);
                 if(response.response == "Email or Password Incorrect"){
+                    alert(response.response);
                     location.reload();
                 }
                 else{

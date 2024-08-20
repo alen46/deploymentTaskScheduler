@@ -13,6 +13,16 @@
     <script src="js/deploymentdetails.js"></script>
     <link rel="stylesheet" href="css/datepicker.css">
     <script src="js/navbar.js"></script>
+    <style>
+        .bootstrap-datetimepicker-widget .weekend {
+  color: red;
+  /*Apply your color*/
+}
+.datepicker-days{
+    background-color: darkslategray;
+}
+
+    </style>
 </head>
 
 <body>
@@ -32,6 +42,7 @@
             </div>
         </nav>
     </header>
+
     <div class="form-container">
         <h1>Deployment Details</h1>
         <form   id="addportal" onsubmit="addportal()" enctype="multipart/form-data">
@@ -73,4 +84,15 @@
         </form>
     </div>
 </body>
+<!-- <script>
+    $('#deployment_date').datepicker({
+    container: '.form-container', // or another relevant container
+    autoclose: true
+    }).on('show', function(e) {
+            $('.datepicker').appendTo($(this).parent()); 
+            
+            // Append the datepicker directly after the input
+        });
+
+</script> -->
 </html>
