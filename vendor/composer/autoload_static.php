@@ -11,6 +11,10 @@ class ComposerStaticInit62e10e6c8df9afc192311b196c75bb33
         array (
             'ZipStream\\' => 10,
         ),
+        'W' => 
+        array (
+            'Webmozart\\Assert\\' => 17,
+        ),
         'P' => 
         array (
             'Psr\\SimpleCache\\' => 16,
@@ -22,8 +26,13 @@ class ComposerStaticInit62e10e6c8df9afc192311b196c75bb33
         array (
             'Matrix\\' => 7,
         ),
+        'G' => 
+        array (
+            'GO\\' => 3,
+        ),
         'C' => 
         array (
+            'Cron\\' => 5,
             'Complex\\' => 8,
         ),
     );
@@ -33,14 +42,18 @@ class ComposerStaticInit62e10e6c8df9afc192311b196c75bb33
         array (
             0 => __DIR__ . '/..' . '/maennchen/zipstream-php/src',
         ),
+        'Webmozart\\Assert\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/webmozart/assert/src',
+        ),
         'Psr\\SimpleCache\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/simple-cache/src',
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -53,6 +66,14 @@ class ComposerStaticInit62e10e6c8df9afc192311b196c75bb33
         'Matrix\\' => 
         array (
             0 => __DIR__ . '/..' . '/markbaker/matrix/classes/src',
+        ),
+        'GO\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/peppeocchi/php-cron-scheduler/src/GO',
+        ),
+        'Cron\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron',
         ),
         'Complex\\' => 
         array (

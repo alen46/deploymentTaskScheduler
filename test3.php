@@ -38,6 +38,35 @@ if($_POST['type'] == 'change'){
         $rowNumber++;
     }
 }
+elseif($_POST['type'] == 'olddeployments'){
+    $sheet->setTitle('Previous Deployments');
+    $headers = [
+        'A1' => 'Portal URL',
+        'B1' => 'Portal Name',
+        'C1' => 'Portal Owner',
+        'D1' => 'Deployment Date',
+        'E1' => 'Old Version',
+        'F1' => 'New Version',
+        'G1' => 'Old Features',
+        'H1' => 'New Features'
+    ];
+    foreach ($headers as $cell => $header) {
+        $sheet->setCellValue($cell, $header);
+    }
+    $query = $conn->query("SELECT users.username PortalOwner, portal.portalname as PortalName, portal.purl PortalURL, deployment_log.date as ddate, deployment_log.oldversion as oldversion, portal.version as newversion, deployment_log.oldfeatures as oldfeatures, portal.pfeatures AS newfeatures FROM `deployment_log` INNER JOIN portal on portal.pid = deployment_log.portal_id INNER JOIN users on portal.portal_owner = users.userid ORDER BY deployment_log.date;");
+    $rowNumber = 2; 
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        $sheet->setCellValue('A' . $rowNumber, $row['PortalURL']);
+        $sheet->setCellValue('B' . $rowNumber, $row['PortalName']);
+        $sheet->setCellValue('C' . $rowNumber, $row['PortalOwner']);
+        $sheet->setCellValue('D' . $rowNumber, $row['ddate']);
+        $sheet->setCellValue('E' . $rowNumber, $row['oldversion']);
+        $sheet->setCellValue('F' . $rowNumber, $row['newversion']);
+        $sheet->setCellValue('G' . $rowNumber, $row['oldfeatures']);
+        $sheet->setCellValue('H' . $rowNumber, $row['newfeatures']);
+        $rowNumber++;
+    }
+}
 else{
     $headers = [
         'A1' => 'Portal URL',

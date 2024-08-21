@@ -187,6 +187,7 @@ var url = getQueryParam('report');
                 }});
         });
     }
+
     if(url == 'change'){
         let alltable =`
         <input type="submit" class="submit-btn" style="background-color: grey;" value="Download" id='downloadbtn'>
@@ -457,4 +458,62 @@ var url = getQueryParam('report');
             }
         });
     }
+
+    if(url == 'olddeployments'){
+        let old =`
+        <input type="submit" class="submit-btn" style="background-color: grey;" value="Download" id='downloadbtn'>
+        <div class="container-xl px-4 mt-4">
+            <div style=" padding: 25px; padding-left: 10px; padding-right: 10px; background-color: aliceblue;" >
+                <table id="test" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Portal URL</th>
+                            <th>Portal Name</th>
+                            <th>Deployment Date</th>
+                            <th>User Name</th>
+                            <th>Old Version</th>
+                            <th>New Version</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>   
+        </div>`
+        $("#table").html(old)
+        let table = $('#test').DataTable({
+            "paging": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "ajax": {
+                "url": `test2.php?type=${url}`,
+                "type": "GET",
+                "datatype": "json",
+                "dataSrc": ""
+            },
+            "columns": [
+                {"data": "purl"},
+                {"data": "portalname"},
+                {"data": "date"},
+                {"data": "username"},
+                {"data": "oldversion"},
+                {"data": "version"}
+            ]
+        });
+        $("#downloadbtn").click(()=>{
+            let date ={
+                'type':'olddeployments',
+            };
+            $.ajax({
+                url: `test3.php`,
+                type: 'POST',
+                dataType: 'json',
+                data: date,
+                success: function(data) {
+                    var link = document.createElement('a');
+                    link.href = data.file;
+                    link.click();
+                }});
+        });
+    }
+
 });
