@@ -7,9 +7,9 @@ $(document).ready(function () {
         validateUsername();
     });
 
-    $("#email").keyup(function () {
-        email.dispatchEvent(new Event('blur'));
-    });
+    // $("#email").blur(function () {
+    //     email.dispatchEvent(new Event('blur'));
+    // });
    
     $("#phone").keyup(function () {
         phone.dispatchEvent(new Event('blur'));
@@ -53,30 +53,16 @@ $(document).ready(function () {
         
         
     $('#email').on('blur', function() {
-            var regex = /^([_\-\.0-9a-zA-Z]+)@([_\-\.0-9a-zA-Z]+)\.([a-zA-Z]){2,7}$/;
-            var emailValue = $(this).val();
-            if(regex.test(emailValue)) {
-                $(this).removeClass("is-invalid");
-                emailError = false; 
-            } else {
-                $(this).addClass("is-invalid");
-                emailError = true; 
-            }
-            let email = $("#email").val();
-            $.ajax({
-                url: `main.php?function=emailcheck&email=${email}`,
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    console.log(data);
-                    if(data == 'ok'){
-                        emailError = false;
-                        $('#email').addClass("is-invalid");
-                        $("#emailerror").text("email alerady exist");
-                        $("#emailerror").show();
-                    }
-                }
-            });
+        var regex = /^([_\-\.0-9a-zA-Z]+)@([_\-\.0-9a-zA-Z]+)\.([a-zA-Z]){2,7}$/;
+        var emailValue = $(this).val();
+        if(regex.test(emailValue)) {
+            $(this).removeClass("is-invalid");
+            emailError = false; 
+        } else {
+            $(this).addClass("is-invalid");
+            emailError = true; 
+        }
+        
     });
 
 
@@ -89,6 +75,7 @@ $(document).ready(function () {
         } else {
             $(this).addClass("is-invalid");
             phoneerror = true; 
+            let email = $("#email").val();
         }
     });
 

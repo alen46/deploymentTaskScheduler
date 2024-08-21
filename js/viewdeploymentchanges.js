@@ -88,7 +88,8 @@ $(document).ready(function(){
             let formData = {
                 'status':"Rejected",
                 'function':"managechange",
-                'deployment_id':$("#deployment_id").val()
+                'deployment_id':$("#deployment_id").val(),
+                'from' : 'adminaccept'
             };
             JSON.stringify(formData);
             console.log(formData);

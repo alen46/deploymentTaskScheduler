@@ -94,28 +94,69 @@ $(document).ready(function(){
                                     e.preventDefault(e); 
                                     let formData = new FormData(this);
                                     if(dte != $('#deployment_date').val()){
-                                    formData.append('oldDate',dte)
-                                    formData.append('id', did)
+                                        formData.append('oldDate',dte)
+                                        formData.append('deployment_id', did)
+                                        formData.append('function', 'adminwarning')
+                                        formData.append('from', 'adminedit')
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "main.php",
+                                            data: formData,
+                                            dataType: "json",
+                                            processData: false, 
+                                            contentType: false, 
+                                            success: function(response) { 
+                                                console.log(response);
+                                                
+                                                if(confirm(response.message) == true){
+                                                    formData.append('function', 'adminedit')
+                                                    console.log(formData);
+                                                    console.log(response);
+                                                    $.ajax({
+                                                        type: "POST",
+                                                        url: "main.php",
+                                                        data: formData,
+                                                        dataType: "json",
+                                                        processData: false, 
+                                                        contentType: false, 
+                                                        success: function(response) { 
+                                                            alert("success")
+                                                            console.log(response);
+                                                            window.location.href = 'index.html'
+                                                        },
+                                                        error: function(xhr, textStatus, errorThrown){
+                                                            alert("An error occurred: " + xhr.status + " " + xhr.statusText);
+                                                            console.error("Error:", xhr, textStatus, errorThrown);
+                                                        }
+                                                    });
+                                                }
+                                            },
+                                            error: function(xhr, textStatus, errorThrown){
+                                                alert("An error occurred: " + xhr.status + " " + xhr.statusText);
+                                                console.error("Error:", xhr, textStatus, errorThrown);
+                                            }
+                                        });
+                                    }else{
+                                        formData.append('function', 'adminedit')
+                                        console.log(formData);
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "main.php",
+                                            data: formData,
+                                            dataType: "json",
+                                            processData: false, 
+                                            contentType: false, 
+                                            success: function(response) { 
+                                                alert(response.message)
+                                                console.log(response);
+                                                window.location.href = 'index.html'
+                                            },
+                                            error: function(xhr, textStatus, errorThrown){
+                                                alert("An error occurred: " + xhr.status + " " + xhr.statusText);
+                                                console.error("Error:", xhr, textStatus, errorThrown);
+                                            }
+                                        });
                                     }
-                                    formData.append('function', 'adminedit')
-                                    console.log(formData);
-                                    $.ajax({
-                                        type: "POST",
-                                        url: "main.php",
-                                        data: formData,
-                                        dataType: "json",
-                                        processData: false, 
-                                        contentType: false, 
-                                        success: function(response) { 
-                                            alert(response.message)
-                                            console.log(response);
-                                            window.location.href = 'index.html'
-                                        },
-                                        error: function(xhr, textStatus, errorThrown){
-                                            alert("An error occurred: " + xhr.status + " " + xhr.statusText);
-                                            console.error("Error:", xhr, textStatus, errorThrown);
-                                        }
-                                    });
                                 });
                             })
                         }

@@ -20,6 +20,23 @@ $(document).ready(function(){
 
     $('#addform').on('submit', function(e) {
     {
+        let email = $('#email').val();
+        $.ajax({
+            url: `main.php?function=emailcheck&email=${email}`,
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                console.log(data);
+                if(data == 'ok'){
+                    emailError = false;
+                    $('#email').addClass("is-invalid");
+                    $("#emailerror").text("email alerady exist");
+                    $("#emailerror").show();
+                }else if(data == "xx"){
+                    emailError = true;
+                }
+            }
+        });
         console.log(emailError);
         if(emailError == false){
             e.preventDefault(e); 

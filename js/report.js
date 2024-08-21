@@ -46,7 +46,7 @@ var url = getQueryParam('report');
     });
     
 
-    if(url == 'date'){
+    if(url == 'date'){        
         let datetable =`<div class="container-xl px-4 mt-4">
             <div style=" padding: 25px; padding-left: 10px; padding-right: 10px; background-color: aliceblue;" >
                 <table id="test" class="display" style="width:100%">
@@ -295,6 +295,9 @@ var url = getQueryParam('report');
         $("#form").html(usersel);
         $("#table").html(usertbl);
         $("#usrbtn").click(()=>{
+            if ($.fn.DataTable.isDataTable('#test')) {
+                $('#test').DataTable().destroy();
+            }
             console.log("user val : " + $("#usrsel").val())
             if($("#usrsel").val() == null){
                 alert("select user")

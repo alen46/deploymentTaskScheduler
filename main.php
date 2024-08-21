@@ -370,27 +370,61 @@ class Deployment{
         }
     }
 
-    public function adminedit(){
+    public function adminwarning(){
         require('conn.php');
         try{
-            if(isset($_POST['oldDate']) && isset($_POST['id']) ){
-                $id = $_POST['id'];
+            if(isset($_POST['oldDate']) && isset($_POST['deployment_id']) ){
+                $id = $_POST['deployment_id'];
                 $olddate = $_POST['oldDate'];
                 $newdate = $_POST['deployment_date'];
-                $sqlInsertChangelog2 = "INSERT INTO `changelog`(`deployment_id`, `old_date`, `new_date`, `change_date`, `change_time`, `info`) VALUES  (:deploymentId, :oldDate, :newDate,:changedate, :changetime, :changeDescription)";
-                $stmtChangelog2 = $conn->prepare($sqlInsertChangelog2);
-                $stmtChangelog2->bindParam(':deploymentId', $id);
-                $stmtChangelog2->bindParam(':oldDate', $olddate);
-                $stmtChangelog2->bindParam(':newDate', $newdate);
-                $stmtChangelog2->bindValue(':changeDescription', 'adjusted by admin');
-                $datenow = new DateTime();
-                $formattedDate = $datenow->format('Y-m-d');
-                $timenow = new DateTime();
-                $formattedTime = $timenow->format('H:i:s');
-                $stmtChangelog2->bindParam(':changedate', $formattedDate);
-                $stmtChangelog2->bindParam(':changetime', $formattedTime);
-                $stmtChangelog2->execute();
+                $startDate = new DateTime($newdate);
+                $endDate = (clone $startDate)->modify('+' . ($_POST['days'] - 1) . ' days');
+                $selectdates = "SELECT deployment_id, deployment_date, required_days FROM `deployment` WHERE deployment_id <> :depid";
+                $stmtseldates = $conn->prepare($selectdates);
+                $stmtseldates->bindParam(":depid", $id, PDO::PARAM_INT);
+                $stmtseldates->execute();
+                $dates = $stmtseldates->fetchAll(PDO::FETCH_ASSOC);
+                $overlaps = false;
+                foreach ($dates as $dateRow) {
+                    $startDate2 = new DateTime($dateRow['deployment_date']);
+                    $endDate2 = (clone $startDate2)->modify('+' . ($dateRow['required_days'] - 1) . ' days');
+                    if ($startDate <= $endDate2 && $startDate2 <= $endDate) {
+                        $overlaps = true;
+                    }
+                }
+                if($overlaps){
+                    echo json_encode(array("message"=>'Dates Overlap. Do You Really want to continue ?'));
+                }else{
+                    echo json_encode(array("message"=>'Do You Really want to continue ?'));
+                }
             }
+        }catch(PDOException $e) {
+            echo "Connection failed: " . $e->getMessage();
+        }finally {
+            $conn = null;
+        }
+    }
+
+    public function adminedit(){
+        require('conn.php');
+        require 'test.php';
+        try{
+            $id = $_POST['deployment_id'];
+            $olddate = $_POST['oldDate'];
+            $newdate = $_POST['deployment_date'];
+            $sqlInsertChangelog2 = "INSERT INTO `changelog`(`deployment_id`, `old_date`, `new_date`, `change_date`, `change_time`, `info`) VALUES  (:deploymentId, :oldDate, :newDate,:changedate, :changetime, :changeDescription)";
+            $stmtChangelog2 = $conn->prepare($sqlInsertChangelog2);
+            $stmtChangelog2->bindParam(':deploymentId', $id);
+            $stmtChangelog2->bindParam(':oldDate', $olddate);
+            $stmtChangelog2->bindParam(':newDate', $newdate);
+            $stmtChangelog2->bindValue(':changeDescription', 'adjusted by admin');
+            $datenow = new DateTime();
+            $formattedDate = $datenow->format('Y-m-d');
+            $timenow = new DateTime();
+            $formattedTime = $timenow->format('H:i:s');
+            $stmtChangelog2->bindParam(':changedate', $formattedDate);
+            $stmtChangelog2->bindParam(':changetime', $formattedTime);
+            $stmtChangelog2->execute();
             $stmt = $conn->prepare("UPDATE `deployment` SET `deployment_version`=:dversion,`deployment_date`=:ddate,`required_days`=:rdays,`deployment_note`=:dnote WHERE deployment.portal_id = :pid");
             $stmt->bindParam(":dversion", $_POST['deployment_version']);
             $stmt->bindParam(":ddate", $_POST['deployment_date']);
@@ -404,7 +438,6 @@ class Deployment{
             $stmt2->bindParam(":pfeatures", $_POST['portal_features']);
             $stmt2->bindParam(":pid", $_POST['portal_id']);
             $stmt2->execute();
-            echo json_encode(array("message" => "Data Updated"));
         }catch(PDOException $e) {
             echo "Connection failed: " . $e->getMessage();
         }finally {
@@ -570,7 +603,7 @@ class Deployment{
                 header('Content-Type: application/json');
                 echo json_encode("ok");
             } else {
-                echo json_encode(array("message" => "No data found"));
+                echo json_encode("xx");
             }
         } catch(PDOException $e) {
             echo json_encode(array("message" =>"Connection failed: " . $e->getMessage()));
