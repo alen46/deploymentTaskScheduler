@@ -61,7 +61,8 @@ $(document).ready(function(){
             'info':$("#admin_note").val(),
             'status':"Accepted",
             'function':"managechange",
-            'deployment_id':$("#deployment_id").val()
+            'deployment_id':$("#deployment_id").val(),
+            'from': 'adminaccept'
         };
         JSON.stringify(formData);
         console.log(formData);

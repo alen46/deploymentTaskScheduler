@@ -1,7 +1,7 @@
 <?php
 require("conn.php");
 class Change{
-    public function set(){
+    public function sett(){
         require("conn.php");
         $newDate = $_POST['new_date'];
         $oldDate  = $_POST['old_date'];
@@ -60,12 +60,45 @@ class Change{
             $stmtseldates->execute();
             $dates = $stmtseldates->fetchAll(PDO::FETCH_ASSOC);
             $overlaps = false;
+            $pday  = 1;
+            $weekdayarr = [];
+            $startDate2 = (clone $startDate);
+            $endDate2 = (clone $endDate);
+            while($startDate2 <= $endDate2 ){
+                $timestamp = strtotime($startDate2->format('d-m-Y'));
+                $weekDay = date('l', $timestamp);
+                $weekdayarr[] = $weekDay;
+                //echo $weekDay;
+                $startDate2->modify('+1 day');
+            }
+            if(in_array('Saturday', $weekdayarr) && in_array('Sunday', $weekdayarr)){
+                $pday = 3 ;
+            }elseif(in_array('Saturday', $weekdayarr)){
+                $pday = 2;
+            }elseif(in_array('Sunday', $weekdayarr)){
+                $pday = 2;
+            }
             foreach ($dates as $dateRow) {
                 $startDate2 = new DateTime($dateRow['deployment_date']);
                 $endDate2 = (clone $startDate2)->modify('+' . ($dateRow['required_days'] - 1) . ' days');
                 if ($startDate <= $endDate2 && $startDate2 <= $endDate) {
                     $overlaps = true;
-                    $newStartDate = (clone $endDate)->modify('+1 day')->format('Y-m-d');
+                    $newStartDate = (clone $endDate)->modify('+ ' . $pday .'days')->format('Y-m-d');
+                    // echo $pday;
+                    // $newdate2 = (clone $endDate);
+                    // if(date('l',strtotime($newdate2->format('Y-m-d'))) == 'Saturday'){
+                    //     echo $newdate2->format('Y-m-d');
+                    //     echo '<br><br>ff<br><br>';
+                    //     echo $newdate2->modify('+ 0 day')->format('Y-m-d');
+                    //     echo date('l',strtotime($newdate2->format('Y-m-d')));
+                    //     echo 'dd';
+                    // }elseif(date('l',strtotime($newdate2->format('Y-m-d')) == 'Sunday')){
+                    //     echo $newdate2->format('Y-m-d');
+                    //     echo '<br><br>gg<br><br>';
+                    //     echo $newdate2->modify('+ 1 days')->format('Y-m-d');
+                    //     echo date('l',strtotime($newdate2->format('Y-m-d')));
+                    //     echo 'dd';
+                    // }
                     $change = "UPDATE `deployment` SET `deployment_date` = :newDate WHERE deployment_id = :did";
                     $stmtchange = $conn->prepare($change);
                     $stmtchange->bindParam(":newDate", $newStartDate);
@@ -99,13 +132,12 @@ class Change{
         $conn->query($qq);
     }
 }
-
 $deploymentId = $_POST['deployment_id'];
 $obj = new Change();
-if(isset($_POST['from']) && $_POST['from'] = 'adminedit'){
+if($_POST['from'] == 'adminedit'){
     $obj->updateDeploymentDates($deploymentId);
-}else if(isset($_POST['from']) && $_POST['from'] = 'adminaccept'){
-    $obj->set();
+}else if($_POST['from'] == 'adminaccept'){
+    $obj->sett();
     $obj->updateDeploymentDates($deploymentId);
     $obj->delete();
 }

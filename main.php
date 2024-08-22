@@ -4,8 +4,15 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 class Deployment{
     public function checklogin(){
+        /**
+         * check whether the user is logged in
+         * 
+         * Starts the session and verifies if the `login` session variable is set.
+         * Returns a JSON response indicating the user's login status and type.
+         */
         session_start();
         try{
+            //check if $_SESSION['login'] variable is set for checking whether user is logged in
             if(isset($_SESSION['login'])) {
                 $response = array(
                     "response" => "logout",
@@ -28,6 +35,9 @@ class Deployment{
     }
 
     public function retdate(){
+        /**
+         * Return the oldest deployment date from table for checking
+         */
         require("conn.php");
         try{
             $sql = "SELECT MIN(deployment_date) as mindate,required_days FROM `deployment`;";
@@ -45,6 +55,9 @@ class Deployment{
     }
 
     public function logout(){
+        /**
+         * Logout the user and destroy session
+         */
         try{
             if (session_status() == PHP_SESSION_NONE) {
                 session_start();
@@ -58,6 +71,9 @@ class Deployment{
     }
 
     public function fetchoptions(){
+        /**
+         * Return the diffrent user types for select tag
+         */
         require("conn.php");
         try{
             $sql = "SELECT usertype.typeid,usertype.typename FROM usertype WHERE usertype.typeid NOT IN (100);";
@@ -76,17 +92,27 @@ class Deployment{
     }
 
     public function fetchportal(){
+        /**
+         * Return  Fetch portal and portal URL for a select tag based on different conditions
+         * 
+         * It uses session variables to determine the user's type and executes different SQL queries accordingly.
+         * 
+         * 'changedeployment': returns portal and URL to the changedeployment page
+         * 'deploymentdetails': returns portal and URL to the deployment details page
+         * 'portl': returns portal and URL to the edit portal page
+         * 'usr': returns details of all users except admin
+         */
         session_start();
         require("conn.php");
         try{
             if($_SERVER['REQUEST_METHOD'] === 'GET'){
                 if($_GET['from'] == 'changedeployment'){
                     if($_SESSION['type'] != '100'){
-                        $sql = "SELECT portal_id, portal.purl FROM `deployment` INNER JOIN portal on portal.pid = deployment.portal_id WHERE deployment_id NOT IN(SELECT deployment_id FROM schhedulechange)  AND portal.portal_owner = :usr;";
+                        $sql = "SELECT portal_id, portal.purl FROM `deployment` INNER JOIN portal on portal.pid = deployment.portal_id WHERE portal.portal_owner = :usr ;";
                         $stmt = $conn->prepare($sql);
                         $stmt->bindParam(":usr", $_SESSION["userid"]);
                     }else{
-                        $sql = "SELECT portal_id, portal.purl FROM `deployment` INNER JOIN portal on portal.pid = deployment.portal_id WHERE deployment_id NOT IN(SELECT deployment_id FROM schhedulechange);";
+                        $sql = "SELECT portal_id, portal.purl FROM `deployment` INNER JOIN portal on portal.pid = deployment.portal_id ;";
                         $stmt = $conn->prepare($sql);
                     }
                 }
@@ -130,8 +156,11 @@ class Deployment{
     }
 
     public function fetchscheduledetails(){
+        /**
+         * Return the deployment schedule details from database table
+         */
         require("conn.php");
-       try{ 
+        try{ 
             $sql = "SELECT portalname,deployment_date,deployment_version,deployment_id FROM deployment INNER JOIN portal on deployment.portal_id = portal.pid where pid = :pid";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":pid", $_GET['id']);
@@ -148,6 +177,9 @@ class Deployment{
     }
 
     public function changepassword(){
+        /**
+         * Change the password of currently logged in user 
+         */
         session_start();
         require("conn.php");
         try{
@@ -170,6 +202,9 @@ class Deployment{
     }
 
     public function adduser(){
+        /**
+         * Add a new user to database storing all details and provide login functionality
+         */
         require("conn.php");
         try {
             header('Content-Type: application/json');
@@ -203,6 +238,13 @@ class Deployment{
     }
 
     public function login() {
+        /**
+         * Handles the user login process
+         * 
+         * check the database and retrieve details of user with the email id entered
+         * verifies the user entered password with the hashed password stored in the database
+         * set session variables 
+         */
         require("conn.php");
         header('Content-Type: application/json');
         try {
@@ -240,6 +282,9 @@ class Deployment{
 
 
     public function addportal(){
+        /**
+         * Adds a new portal to the database.
+         */
         require("conn.php");
         session_start();
         try {
@@ -275,6 +320,14 @@ class Deployment{
     }
 
     public function adddeployment(){
+        /**
+         * Add a new deployment for each portal 
+         * 
+         * save the details of the new deployment to database
+         * handle file upload by checking if file is received and with error code 0
+         * file is moved to a version specific folder for each portal
+         * a new folder is created for each version if not present
+         */
         require("conn.php");
         header('Content-Type: application/json');
         try {
@@ -285,7 +338,7 @@ class Deployment{
                 $num_days = $_POST['num_days'];
                 $deployment_note = $_POST['deployment_note'];
                 if (isset($_FILES['deployment_plan']) && $_FILES['deployment_plan']['error'] == 0) {
-                    $uploadDir = 'uploads/'; 
+                    $uploadDir = 'uploads/'.$portal_url.'/'.$portal_version.'/'; 
                     $uploadFile = $uploadDir . basename($_FILES['deployment_plan']['name']);
                     // create directory if not present 0777 indicates read write execute permission
                     if (!is_dir($uploadDir)) {
@@ -320,6 +373,11 @@ class Deployment{
     }
 
     public function changeschedule() {
+        /**
+         * Add the details of portals that require a change in deployment schedule
+         * 
+         * Requests submitted by user to the admin to change the deployment date is saved 
+         */
         session_start();
         require("conn.php");
         try {
@@ -351,6 +409,9 @@ class Deployment{
     }
 
     public function datatable(){
+        /**
+         * Return data for datatable displaying the details of change requests
+         */
         require('conn.php');
         try {
             $sql = "SELECT portal.purl, portal.portalname,deployment.deployment_date, users.username, schhedulechange.new_date FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN schhedulechange on schhedulechange.deployment_id = deployment.deployment_id INNER JOIN users on schhedulechange.user_id = users.userid WHERE schhedulechange.change_status = 'Pending' ;";
@@ -371,6 +432,13 @@ class Deployment{
     }
 
     public function adminwarning(){
+        /**
+         * Check for overlapping deployment dates and issue a warning.
+         * 
+         * checks whether the new deployment date range overlaps with any existing deployment dates of other deployments.
+         * if overlap is present a warning stating there is a overlap in dates 
+         * if no overlap is present returns a confirm message to admin
+         */
         require('conn.php');
         try{
             if(isset($_POST['oldDate']) && isset($_POST['deployment_id']) ){
@@ -406,6 +474,14 @@ class Deployment{
     }
 
     public function adminedit(){
+        /**
+         *  Handles the admin's edits of an existing deployment.
+         * 
+         * This function updates the deployment details and logs the changes in a changelog table.
+         * It updates both the deployment and the associated portal information.
+         * 
+         * Calls file 'test.php' for updating the dates of other deployments adjusting to the change in deployment date of a portal
+         */
         require('conn.php');
         require 'test.php';
         try{
@@ -446,6 +522,9 @@ class Deployment{
     }
 
     public function deploymentstable(){
+        /**
+         * Returns the data for datatable displaying the portal details
+         */
         require('conn.php');
         try {
             $sql = "SELECT portal.purl, portal.portalname,deployment.deployment_date, users.username, deployment.required_days , deployment.deployment_id FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users on portal.portal_owner = users.userid order by deployment_date";
@@ -467,6 +546,9 @@ class Deployment{
 
 
     public function viewdetails(){
+        /**
+         * Returns the details of diffrent portal deployments.
+         */
         require("conn.php");
         try{
             if($_GET['from'] == 'schedule'){
@@ -489,6 +571,9 @@ class Deployment{
     }
 
     public function managechange(){
+        /**
+         * Set the status of each change request after admin accepts or rejects the change
+         */
         require("conn.php");
         header('Content-Type: application/json');
         try{
@@ -508,6 +593,11 @@ class Deployment{
     }
 
     public function disabledate(){
+        /**
+         * Return the dates of deployments scheduled as an array
+         * 
+         * Used to disable dates in datepicker 
+         */
         require("conn.php");
         try{
             $sql = "SELECT deployment_date, required_days FROM `deployment`;";
@@ -523,6 +613,18 @@ class Deployment{
                     $date->modify('+' . $i . ' days');
                     array_push($datearr, $date->format('Y-m-d')); 
                 }
+                $x = 0;
+                foreach($datearr as $startDate){
+                    $startDate = new DateTime($startDate);
+                    if(date('l',strtotime($startDate->format('Y-m-d')))== 'Saturday' || date('l',strtotime($startDate->format('Y-m-d'))) == 'Sunday'){
+                        $x++;
+                    }
+                }
+                $y = new DateTime($datearr[sizeof($datearr) - 1]);
+                for($i = 1;$i<$x + 1 ;$i++){
+                    $y->modify("+1 days");
+                    array_push($datearr, $y->format('Y-m-d'));
+                }
                 $allDates = array_merge($allDates, $datearr);  
             }
             echo json_encode($allDates);  
@@ -537,6 +639,12 @@ class Deployment{
     }
 
     public function message(){
+        /**
+         * Used to show the changes in schedule
+         * 
+         * returns the change info of changes in deployment table
+         * displayed to respective users of changes in their portal deployments
+         */
         require("conn.php");
         session_start();
         try{

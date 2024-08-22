@@ -4,6 +4,6 @@ use GO\Scheduler;
 
 $scheduler = new Scheduler();
 
-$scheduler->php("dailycheck.php")->daily("10:00");
+$scheduler->php("dailycheck.php")->daily("16:03");
 
 $scheduler->run();

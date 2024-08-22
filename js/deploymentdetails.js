@@ -51,7 +51,8 @@ $(document).ready(function(){
                 startDate: "today",
                 adaptivePosition: true,
                 container: '.form-container', 
-                autoclose: true
+                autoclose: true,
+                daysOfWeekDisabled: [0, 6],
             }).on('show', function(e) {
                 $('.datepicker').appendTo($(this).parent()); 
             });
