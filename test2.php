@@ -1,7 +1,9 @@
 <?php
 require("conn.php");
 header('Content-Type: application/json');
-
+/**
+ * Used to retreive data to dispaly in datatable of report generation
+ */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {  
         if($_POST['type'] == 'date'){

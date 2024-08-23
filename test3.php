@@ -1,16 +1,23 @@
 <?php
 require "conn.php";
 require 'vendor/autoload.php';
+
+// PhpSpreadsheet library to handle Excel file generation
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
+
+// Initialize a new spreadsheet and select the active sheet
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 
-// $sheet->setTitle('Report');
-
+// Check the type of report to generate based on the POST request
 if($_POST['type'] == 'change'){
+
+    // Set the title for the sheet
     $sheet->setTitle('All Changes');
+
+    // Define column headers for the change log report
     $headers = [
         'A1' => 'Portal URL',
         'B1' => 'Portal Name',
@@ -21,11 +28,15 @@ if($_POST['type'] == 'change'){
         'G1' => 'Change Time',
         'H1' => 'Change Info'
     ];
+
+    // Set the column headers in the sheet
     foreach ($headers as $cell => $header) {
         $sheet->setCellValue($cell, $header);
     }
     $query = $conn->query("SELECT users.username PortalOwner, portal.portalname as PortalName, portal.purl PortalURL, changelog.old_date as OldDate, changelog.new_date as NewDate, changelog.change_date as ChangeDate, changelog.change_time as ChangeTime, changelog.info AS ChangeInfo FROM `changelog` INNER JOIN deployment ON changelog.deployment_id = deployment.deployment_id INNER JOIN portal on portal.pid = deployment.portal_id INNER JOIN users on portal.portal_owner = users.userid ORDER BY change_date;");
     $rowNumber = 2; 
+
+    // Add data to sheet from the query result
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $sheet->setCellValue('A' . $rowNumber, $row['PortalURL']);
         $sheet->setCellValue('B' . $rowNumber, $row['PortalName']);
@@ -39,7 +50,11 @@ if($_POST['type'] == 'change'){
     }
 }
 elseif($_POST['type'] == 'olddeployments'){
+
+    // Set the title for the sheet
     $sheet->setTitle('Previous Deployments');
+
+    // Define column headers for the change log report
     $headers = [
         'A1' => 'Portal URL',
         'B1' => 'Portal Name',
@@ -50,11 +65,15 @@ elseif($_POST['type'] == 'olddeployments'){
         'G1' => 'Old Features',
         'H1' => 'New Features'
     ];
+
+    // Set the column headers in the sheet
     foreach ($headers as $cell => $header) {
         $sheet->setCellValue($cell, $header);
     }
     $query = $conn->query("SELECT users.username PortalOwner, portal.portalname as PortalName, portal.purl PortalURL, deployment_log.date as ddate, deployment_log.oldversion as oldversion, portal.version as newversion, deployment_log.oldfeatures as oldfeatures, portal.pfeatures AS newfeatures FROM `deployment_log` INNER JOIN portal on portal.pid = deployment_log.portal_id INNER JOIN users on portal.portal_owner = users.userid ORDER BY deployment_log.date;");
     $rowNumber = 2; 
+
+    // Add data to sheet from the query result
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $sheet->setCellValue('A' . $rowNumber, $row['PortalURL']);
         $sheet->setCellValue('B' . $rowNumber, $row['PortalName']);
@@ -68,6 +87,8 @@ elseif($_POST['type'] == 'olddeployments'){
     }
 }
 else{
+
+    // Define column headers for the change log report
     $headers = [
         'A1' => 'Portal URL',
         'B1' => 'Portal Name',
@@ -79,6 +100,8 @@ else{
         'H1' => 'Portal Features',
         'I1' => 'New Features'
     ];
+
+    // Set the column headers in the sheet
     foreach ($headers as $cell => $header) {
         $sheet->setCellValue($cell, $header);
     }
@@ -93,11 +116,15 @@ else{
         $query->execute();
     }
     else if($_POST["type"] == "alldeployments"){
+
+        // Set the title for the sheet
         $sheet->setTitle('All Deployments');
         $query = $conn->query("SELECT deployment_version as DeploymentVersion,deployment_date as DeploymentDate, deployment_note as DeploymentNote, required_days as RequiredDays,portalname as PortalName, purl as PortalURL, version as CurrentPortalVersion, pfeatures as PortalFeatures, username as PortalOwner FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users on portal.portal_owner = users.userid");
     }
     elseif($_POST['type'] == 'user'){
         $usr = $_POST['usr'];
+
+        // Set the title for the sheet
         $sheet->setTitle('User - '.$usr);
         if( $usr == ''){
             $query = $conn->prepare("SELECT deployment_version AS DeploymentVersion, deployment_date AS DeploymentDate, deployment_note AS DeploymentNote, required_days AS RequiredDays, portalname AS PortalName, purl AS PortalURL, version AS CurrentPortalVersion, pfeatures AS PortalFeatures, username AS PortalOwner FROM deployment INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users ON portal.portal_owner = users.userid WHERE users.userid in (SELECT users.userid from users)");
@@ -109,6 +136,8 @@ else{
     }
     elseif($_POST['type'] == 'portal'){
         $portl = $_POST['portl'];
+
+        // Set the title for the sheet
         $sheet->setTitle('Portal - '. $portl);
         if( $portl == ''){
             $query = $conn->prepare("SELECT deployment_version AS DeploymentVersion, deployment_date AS DeploymentDate, deployment_note AS DeploymentNote, required_days AS RequiredDays, portalname AS PortalName, purl AS PortalURL, version AS CurrentPortalVersion, pfeatures AS PortalFeatures, username AS PortalOwner FROM deployment INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users ON portal.portal_owner = users.userid WHERE portal.pid in (SELECT portal.pid from portal)");
@@ -119,6 +148,8 @@ else{
         $query->execute();
     }
     $rowNumber = 2;
+
+    // Add data to sheet from the query result
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $sheet->setCellValue('A' . $rowNumber, $row['PortalURL']);
         $sheet->setCellValue('B' . $rowNumber, $row['PortalName']);
@@ -133,6 +164,7 @@ else{
     }
 }
 
+// Set autosize 
 foreach (range('A', 'I') as $col) {
     $sheet->getColumnDimension($col)->setAutoSize(true);
 }
@@ -142,7 +174,11 @@ $datenow = new DateTime();
 $formattedDate = $datenow->format('Y_m_d');
 $timenow = new DateTime();
 $formattedTime = $timenow->format('H_i_s');
+
+// Set the filename for the output Excel file
 $filename =htmlspecialchars( 'reports/report'.$formattedDate.'__'.$formattedTime.'.xlsx');
+
+// Save the generated Excel file
 $writer->save($filename);
 echo json_encode(array('file'=> $filename));
 $conn = null;

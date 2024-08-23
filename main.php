@@ -453,6 +453,7 @@ class Deployment{
                 $stmtseldates->execute();
                 $dates = $stmtseldates->fetchAll(PDO::FETCH_ASSOC);
                 $overlaps = false;
+                //check if the deployment dates o next deployment is having an overlap with the newly selected date
                 foreach ($dates as $dateRow) {
                     $startDate2 = new DateTime($dateRow['deployment_date']);
                     $endDate2 = (clone $startDate2)->modify('+' . ($dateRow['required_days'] - 1) . ' days');
@@ -663,6 +664,11 @@ class Deployment{
     }
 
     public function readmessage(){
+        /**
+         * Update column in the database if the user has seen the message 
+         * 
+         * used to notify the user only when a new notification is available
+         */
         require("conn.php");
         try{
             $stmt = $conn->prepare("update changelog set view = 1 where log_id = :id");
@@ -679,6 +685,9 @@ class Deployment{
     }
 
     public function edituser(){
+        /**
+         * Edit the user details by the admin
+         */
         require("conn.php");
         session_start();
         try{
@@ -700,6 +709,9 @@ class Deployment{
     }
 
     public function emailcheck(){
+        /**
+         * Check whether a particular email is present in the database
+         */
         require('conn.php');
         try {
             $sql = "SELECT email from users where email = :email";
@@ -723,6 +735,11 @@ class Deployment{
 }
 
 try{
+    /**
+     * Receive the name of function from user and call the function
+     * 
+     * Create an object and call the function passed from the page
+     */
     if ($_SERVER['REQUEST_METHOD'] === 'POST'){
     if(isset($_POST['function'])){
         $obj = new Deployment();
