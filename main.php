@@ -213,7 +213,12 @@ class Deployment{
                 $email = $_POST['email'];
                 $phone = $_POST['phone'];
                 $usertype = $_POST['usertype'];
-                $pass = $_POST['password'];
+                $pass = '';
+                $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
+                for ($i = 0; $i < 8; $i++) {
+                    $n = rand(0, strlen($alphabet)-1);
+                    $pass .= $alphabet[$n];
+                }
                 $password = password_hash($pass, PASSWORD_DEFAULT);
                 $sql = $conn->prepare("INSERT INTO users(username, password, email, phone, type) VALUES (:name,:password,:email,:phone,:usertype)");
                 $sql->bindParam(':name',$name);
@@ -222,6 +227,7 @@ class Deployment{
                 $sql->bindParam(':password',$password);
                 $sql->bindParam(':usertype',$usertype);
                 $sql->execute();
+                require_once 'registermail.php';
                 echo json_encode(array("response" =>$name." inserted successfully"));
             }
             else{

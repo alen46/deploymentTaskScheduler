@@ -121,18 +121,12 @@ class Change{
                     $stmtchange->bindParam(":did", $dateRow['deployment_id'], PDO::PARAM_INT);
                     if ($stmtchange->execute()) {
                         // Log the date change due to conflict resolution
-                        $sqlInsertChangelog2 = "INSERT INTO `changelog`(`deployment_id`, `old_date`, `new_date`, `change_date`, `change_time`, `info`) VALUES  (:deploymentId, :oldDate, :newDate,:changedate, :changetime, :changeDescription)";
+                        $sqlInsertChangelog2 = "INSERT INTO `changelog`(`deployment_id`, `old_date`, `new_date`, `change_date`, `change_time`, `info`) VALUES  (:deploymentId, :oldDate, :newDate, CURRENT_DATE, CURRENT_TIME, :changeDescription)";
                         $stmtChangelog2 = $conn->prepare($sqlInsertChangelog2);
                         $stmtChangelog2->bindParam(':deploymentId', $dateRow['deployment_id']);
                         $stmtChangelog2->bindParam(':oldDate', $dateRow['deployment_date']);
                         $stmtChangelog2->bindParam(':newDate', $newStartDate);
                         $stmtChangelog2->bindValue(':changeDescription', 'adjusted due to deployment conflict');
-                        $datenow = new DateTime();
-                        $formattedDate = $datenow->format('Y-m-d');
-                        $timenow = new DateTime();
-                        $formattedTime = $timenow->format('H:i:s');
-                        $stmtChangelog2->bindParam(':changedate', $formattedDate);
-                        $stmtChangelog2->bindParam(':changetime', $formattedTime);
                         $stmtChangelog2->execute();
                         // Add the conflicting deployment to the queue for further checks
                         $queue[] = $dateRow['deployment_id'];
@@ -152,13 +146,35 @@ class Change{
         $qq = "DELETE t1 FROM changelog t1 INNER JOIN changelog t2 WHERE t1.deployment_id = t2.deployment_id AND t1.change_time = t2.change_time AND t1.log_id < t2.log_id;";
         $conn->query($qq);
     }
+
+    public function mail(){
+        //require 'mail.php';
+        require "conn.php";
+        $mailq = "SELECT changelog.log_id, changelog.new_date, changelog.old_date, changelog.info, users.email FROM `changelog` INNER JOIN deployment on deployment.deployment_id = changelog.deployment_id INNER JOIN portal on deployment.portal_id = portal.pid INNER JOIN users on users.userid = portal.portal_owner where mail = '0'";
+        $stmt = $conn->query($mailq);
+        $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($row as $ss) {
+            $newDate = $ss['new_date'];
+            $oldDate  = $ss['old_date'];
+            $reason  = $ss['info'];
+            $email = $ss['email'];
+            require_once 'mail.php';
+            $emailset = "update changelog set mail = 1 where log_id = :id";
+            $emalread = $conn->prepare("$emailset");
+            $emalread->bindParam("id", $ss['log_id']);
+            $emalread->execute();
+        }
+        
+    }
 }
 $deploymentId = $_POST['deployment_id'];
 $obj = new Change();
 if($_POST['from'] == 'adminedit'){
     $obj->updateDeploymentDates($deploymentId);
+    $obj->mail();
 }else if($_POST['from'] == 'adminaccept'){
     $obj->sett();
     $obj->updateDeploymentDates($deploymentId);
     $obj->delete();
+    $obj->mail();
 }

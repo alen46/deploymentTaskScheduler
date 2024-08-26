@@ -23,16 +23,6 @@ $().ready(function () {
                 required: true,
                 minlength: 3 // For length of lastname
             },
-            password1: {
-                required: true,
-                minlength: 8,
-                strong_password: true
-            },
-            password2: {
-                required: true,
-                equalTo: "#password1",
-                strong_password: true
-            },
             email: {
                 required: true,
                 email: true
@@ -44,14 +34,6 @@ $().ready(function () {
             name: {
                 required: " Please enter a username",
                 minlength:" Your username must consist of at least 3 characters"
-            },
-            password1: {
-                required: " Please enter a password",
-                minlength:" Your password must be consist of at least 8 characters"
-            },
-            password2: {
-                required: " Please enter a password",
-                equalTo: " Please enter the same password as above"
             },
             email: {
                 remote: "Email already exist"
@@ -76,7 +58,6 @@ $().ready(function () {
                     formData.append('name', $("#name").val());
                     formData.append('email', $("#email").val());
                     formData.append('phone', $("#phone").val());
-                    formData.append('password', $("#password1").val());
                     formData.append('usertype', $("#typesel").val());
                     formData.append('function',"adduser");
                     console.log(formData);

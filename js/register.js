@@ -21,7 +21,7 @@ $().ready(function () {
         rules: {
             name: {
                 required: true,
-                minlength: 3 // For length of lastname
+                minlength: 3 
             },
             password1: {
                 required: true,
@@ -39,7 +39,6 @@ $().ready(function () {
             },
             agree: "required"
         },
-        // In 'messages' user have to specify message as per rules
         messages: {
             name: {
                 required: " Please enter a username",

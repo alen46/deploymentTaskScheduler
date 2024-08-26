@@ -1,45 +1,63 @@
 <?php
-	// $startDate = "2024-08-2";
-	// // $endDate = "08-01-2018";
-	// $startDate = new DateTime($startDate);
-	// $endDate = new DateTime($endDate);
-    // $weekdayarr = [];
-    $datearr = ["2024-08-23", "2024-08-24", "2024-08-25","2024-08-26", "2024-08-27", "2024-08-28"];
-    $x = 0;
-    foreach($datearr as $startDate){
-        $startDate = new DateTime($startDate);
-        if(date('l',strtotime($startDate->format('Y-m-d')))== 'Saturday' || date('l',strtotime($startDate->format('Y-m-d'))) == 'Sunday'){
-            $x++;
+session_start();
+include('conn.php');
+
+require 'vendor/autoload.php';
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
+if(isset($_POST['save_excel_data']))
+{
+    $fileName = $_FILES['import_file']['name'];
+    $file_ext = pathinfo($fileName, PATHINFO_EXTENSION);
+
+    $allowed_ext = ['xls','csv','xlsx'];
+
+    if(in_array($file_ext, $allowed_ext))
+    {
+        $inputFileNamePath = $_FILES['import_file']['tmp_name'];
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($inputFileNamePath);
+        $data = $spreadsheet->getActiveSheet()->toArray();
+
+        $count = "0";
+        foreach($data as $row)
+        {
+            if($count > 0)
+            {
+                $id = $_SESSION['userid'];
+                $fullname = $row['0'];
+                $email = $row['1'];
+                $phone = $row['2'];
+                $course = $row['3'];
+
+                $insertqry = "INSERT INTO `portal`(`portal_owner`, `portalname`, `purl`, `version`, `pfeatures`) VALUES (:id,:a,:b,:c,:d)";
+                $stmt = $conn->prepare($insertqry);
+                $stmt->bindParam(":id", $fullname);
+                $stmt->bindParam(":a", $id);
+                $stmt->bindParam(":b", $email);
+                $stmt->bindParam(":c", $phone);
+                $stmt->bindParam(":d", $course);
+                $stmt->execute();
+                $msg = true;
+            }
+            else
+            {
+                $count = "1";
+            }
+        }
+
+        if(isset($msg))
+        {
+            echo "success";
+        }
+        else
+        {
+            echo "not success";
         }
     }
-    $y = new DateTime($datearr[sizeof($datearr) - 1]);
-    for($i = 1;$i<$x + 1 ;$i++){
-        $y->modify("+".$i." days");
-        array_push($datearr, $y->format('Y-m-d'));
+    else
+    {
+        echo "smtng else";
     }
-    
-    // elseif(date('l',strtotime($startDate->format('Y-m-d'))) == 'Sunday'){
-    //     echo $startDate->format('Y-m-d');
-    //     echo date('l',strtotime($startDate->format('Y-m-d')));
-    //     echo '<br><br>gg<br><br>';
-    //     echo $startDate->modify('+ 1 days')->format('Y-m-d');
-    //     echo date('l',strtotime($startDate->format('Y-m-d')));
-    //     echo 'dd';
-    // }
-
-
-	// while($startDate <= $endDate ){
-	// 	$timestamp = strtotime($startDate->format('d-m-Y'));
-	// 	$weekDay = date('l', $timestamp);
-    //     $weekdayarr[] = $weekDay;
-    //     echo $weekDay;
-	// 	$startDate->modify('+1 day');
-	// }
-    // if(in_array('Saturday', $weekdayarr) && in_array('Sunday', $weekdayarr)){
-    //     echo '<br>111';
-    // }elseif(in_array('Saturday', $weekdayarr)){
-    //     echo '<br>222';
-    // }elseif(in_array('Sunday', $weekdayarr)){
-    //     echo '<br>333';
-    // }
-?>
+}
