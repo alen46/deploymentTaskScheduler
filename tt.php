@@ -7,8 +7,6 @@ require 'vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-if(isset($_POST['save_excel_data']))
-{
     $fileName = $_FILES['import_file']['name'];
     $file_ext = pathinfo($fileName, PATHINFO_EXTENSION);
 
@@ -26,18 +24,18 @@ if(isset($_POST['save_excel_data']))
             if($count > 0)
             {
                 $id = $_SESSION['userid'];
-                $fullname = $row['0'];
-                $email = $row['1'];
-                $phone = $row['2'];
-                $course = $row['3'];
+                $name = $row['0'];
+                $url = $row['1'];
+                $version = $row['2'];
+                $features = $row['3'];
 
                 $insertqry = "INSERT INTO `portal`(`portal_owner`, `portalname`, `purl`, `version`, `pfeatures`) VALUES (:id,:a,:b,:c,:d)";
                 $stmt = $conn->prepare($insertqry);
-                $stmt->bindParam(":id", $fullname);
-                $stmt->bindParam(":a", $id);
-                $stmt->bindParam(":b", $email);
-                $stmt->bindParam(":c", $phone);
-                $stmt->bindParam(":d", $course);
+                $stmt->bindParam(":id", $id);
+                $stmt->bindParam(":a", $name);
+                $stmt->bindParam(":b", $url);
+                $stmt->bindParam(":c", $version);
+                $stmt->bindParam(":d", $features);
                 $stmt->execute();
                 $msg = true;
             }
@@ -49,15 +47,14 @@ if(isset($_POST['save_excel_data']))
 
         if(isset($msg))
         {
-            echo "success";
+            echo json_encode(array("status"=> "success","msg"=>'Successfully Inserted'));
         }
         else
         {
-            echo "not success";
+            echo json_encode(array('status'=> 'Failed','msg'=> 'Please Try Again'));
         }
     }
     else
     {
-        echo "smtng else";
+       echo json_encode(array('status'=> 'Something','msg'=> 'Some other error'));
     }
-}

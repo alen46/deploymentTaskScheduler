@@ -45,7 +45,7 @@ $(document).ready(function(){
     $('#pswdchng').on('submit', function(e) {
         e.preventDefault(e); 
         let formData = {
-            'newpassword': $("#newpassword").val(),
+            'newpassword': $("#password1").val(),
             'function': 'changepassword'
         }
         console.log(formData)

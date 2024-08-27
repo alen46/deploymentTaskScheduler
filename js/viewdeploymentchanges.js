@@ -30,7 +30,7 @@ $(document).ready(function(){
                 $("#deployment_version").val(data.deployment_version);
                 $("#portal_features").val(data.pfeatures);
                 $("#new_features").val(data.deployment_note);
-                $("#deployment_date").val(data.new_date);
+                $("#deployment_date").val(data.deployment_date);
                 $("#days").val(data.required_days);
                 $("#username").val(data.username);
                 $("#deployment_id").val(data.deployment_id);

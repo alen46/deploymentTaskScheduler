@@ -112,12 +112,22 @@ class Change{
                 $endDate2 = (clone $startDate2)->modify('+' . ($dateRow['required_days'] - 1) . ' days');
                 if ($startDate <= $endDate2 && $startDate2 <= $endDate) {
                     $overlaps = true;
-                    $newStartDate = (clone $endDate)->modify('+ ' . $pday .'days')->format('Y-m-d');
+                    $newStartDate = (clone $endDate)->modify('+ ' . $pday .'days');
 
+                    $newStartDate2 = (clone $newStartDate);
+                    $timestamp = strtotime($newStartDate2->format('d-m-Y'));
+                    $weekDay = date('l', $timestamp);
+                    if($weekDay == 'Saturday'){
+                        $newStartDate2->modify('+2 days')->format('Y-m-d');
+                    }elseif($weekDay == 'Sunday'){
+                        $newStartDate2->modify('+1 day')->format('Y-m-d');
+                    }
                     // Update the conflicting deployment's date
+
+                    $formattedDate2 = $newStartDate2->format('Y-m-d');
                     $change = "UPDATE `deployment` SET `deployment_date` = :newDate WHERE deployment_id = :did";
                     $stmtchange = $conn->prepare($change);
-                    $stmtchange->bindParam(":newDate", $newStartDate);
+                    $stmtchange->bindParam(":newDate",$formattedDate2 );
                     $stmtchange->bindParam(":did", $dateRow['deployment_id'], PDO::PARAM_INT);
                     if ($stmtchange->execute()) {
                         // Log the date change due to conflict resolution
@@ -125,7 +135,7 @@ class Change{
                         $stmtChangelog2 = $conn->prepare($sqlInsertChangelog2);
                         $stmtChangelog2->bindParam(':deploymentId', $dateRow['deployment_id']);
                         $stmtChangelog2->bindParam(':oldDate', $dateRow['deployment_date']);
-                        $stmtChangelog2->bindParam(':newDate', $newStartDate);
+                        $stmtChangelog2->bindParam(':newDate', $formattedDate2);
                         $stmtChangelog2->bindValue(':changeDescription', 'adjusted due to deployment conflict');
                         $stmtChangelog2->execute();
                         // Add the conflicting deployment to the queue for further checks
