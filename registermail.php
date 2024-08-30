@@ -19,7 +19,7 @@ try {
     $mail->addAddress($email, 'User'); 
 
     $mail->isHTML(true); 
-    $mail->Subject = "Schedule Change Notification";
+    $mail->Subject = "Welcome to Deployment Task Scheduler";
     $mail->Body = '<!DOCTYPE html>
                     <html lang="en">
                     <head>

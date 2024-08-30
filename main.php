@@ -623,12 +623,12 @@ class Deployment{
                 $x = 0;
                 foreach($datearr as $startDate){
                     $startDate = new DateTime($startDate);
-                    if(date('l',strtotime($startDate->format('Y-m-d')))== 'Saturday' || date('l',strtotime($startDate->format('Y-m-d'))) == 'Sunday'){
-                        $x++;
+                    if(date('l',strtotime($startDate->format('Y-m-d'))) == 'Saturday'){
+                        $x += 2;
                     }
                 }
                 $y = new DateTime($datearr[sizeof($datearr) - 1]);
-                for($i = 1;$i<$x + 1 ;$i++){
+                for( $i = 0 ; $i < $x  ; $i++ ){
                     $y->modify("+1 days");
                     array_push($datearr, $y->format('Y-m-d'));
                 }

@@ -58,7 +58,7 @@ $().ready(function () {
         }
     });
     $("#addform").submit(function(e) {
-        e.preventDefault();
+       // e.preventDefault();
         let email = $('#email').val();
         $.ajax({
             url: `main.php?function=emailcheck&email=${email}`,
@@ -79,23 +79,25 @@ $().ready(function () {
                     formData.append('usertype', $("#typesel").val());
                     formData.append('function',"adduser");
                     console.log(formData);
-                    $.ajax({
-                        type: "POST",
-                        url: "main.php",
-                        data: formData,
-                        dataType: "json",
-                        processData: false, 
-                        contentType: false, 
-                        success: function(response) { 
-                            window.alert(response.response); 
-                            console.log(response);
-                            window.location.href = 'index.html';
-                        },
-                        error: function(xhr, textStatus, errorThrown){
-                            alert("An error occurred: " + xhr.status + " " + xhr.statusText);
-                            console.error("Error:", xhr, textStatus, errorThrown);
-                        }
-                    });
+                    if($("#name").val() !='' && $("#email").val() !='' && $("#typesel").val() != null && $("#phone").val()!=''){
+                        $.ajax({
+                            type: "POST",
+                            url: "main.php",
+                            data: formData,
+                            dataType: "json",
+                            processData: false, 
+                            contentType: false, 
+                            success: function(response) { 
+                                window.alert(response.response); 
+                                console.log(response);
+                                window.location.href = 'index.html';
+                            },
+                            error: function(xhr, textStatus, errorThrown){
+                                alert("An error occurred: " + xhr.status + " " + xhr.statusText);
+                                console.error("Error:", xhr, textStatus, errorThrown);
+                            }
+                        });
+                    }
                 }
             },
             error: function(error,xhr,status){

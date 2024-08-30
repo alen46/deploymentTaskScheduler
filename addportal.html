@@ -52,12 +52,12 @@
                 <textarea id="portal_features" name="portal_features" placeholder="Enter portal features" required></textarea>
             </div>
             <input type="submit" class="submit-btn" value="Save" >   
-            <p style="color: blue; padding-top: 20px;" id="filelink">Add Multiple using excel file</p>   
+            <p style="color: blue; padding-top: 20px;" id="filelink">Add Multiple using file import</p>   
         </form>
     </div>
     <div class="card-body" id="file">
         <form id="fileupload" method="POST" enctype="multipart/form-data">
-            <input type="file" name="import_file" class="form-control" />
+            <input type="file" name="import_file" class="form-control" id="import_file" />
             <input type="submit" name="save_excel_data" class="btn btn-primary mt-3" value="Import">
         </form>
     </div>
@@ -69,24 +69,30 @@
         $("#formdiv").hide();
     })
     $("#fileupload").submit((event)=>{
-            event.preventDefault();
-            let form = event.target;
-            formData = new FormData(form);
-            $.ajax({
-                url: 'tt.php',
-                type: 'POST',
-                dataType: 'json',
-                data: formData,
-                processData: false, 
-                contentType: false,
-                success: function(response) {
-                    alert(response.msg);
-                    window.location.href = 'index.html';
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error fetching data:', error);
-                }
-            })
+
+        // let formData = new FormData();
+        // let fileInput = $('#import_file')[0].files[0];
+        // if (fileInput) {
+        //     let formData = {'import_file' : fileInput};
+        // }
+        event.preventDefault();
+        let form = event.target;
+        formData = new FormData(form);
+        $.ajax({
+            url: 'tt.php',
+            type: 'POST',
+            dataType: 'json',
+            data: formData,
+            processData: false, 
+            contentType: false,
+            success: function(response) {
+                alert(response.msg);
+                window.location.href = 'index.html';
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching data:', error);
+            }
         })
+    })
 </script>
 </html>

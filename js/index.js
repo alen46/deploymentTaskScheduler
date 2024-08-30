@@ -7,9 +7,11 @@ $(document).ready(function(){
             if(response.type == '102'){
                 $("#card5, #card6, #card7, #card8, #card10").hide();
             }
-            if(response.type == '101' ){
+            else if(response.type == '101' ){
                 $("#card1, #card2, #card3, #card4, #card5, #card8, #card7, #card10").hide();
                 $("#card6").show();
+            }else if(response.type == '100' ){
+                $("#card4").hide();
             }
             if(response.response == "logout"){
                 $("#login").text("Logout");

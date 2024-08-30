@@ -21,7 +21,7 @@ $().ready(function () {
         rules: {
             name: {
                 required: true,
-                minlength: 3 // For length of lastname
+                minlength: 3 
             },
             email: {
                 required: true,
@@ -61,23 +61,27 @@ $().ready(function () {
                     formData.append('usertype', $("#typesel").val());
                     formData.append('function',"adduser");
                     console.log(formData);
-                    $.ajax({
-                        type: "POST",
-                        url: "main.php",
-                        data: formData,
-                        dataType: "json",
-                        processData: false, 
-                        contentType: false, 
-                        success: function(response) { 
-                            window.alert(response.response); 
-                            console.log(response);
-                            window.location.href = 'index.html';
-                        },
-                        error: function(xhr, textStatus, errorThrown){
-                            alert("An error occurred: " + xhr.status + " " + xhr.statusText);
-                            console.error("Error:", xhr, textStatus, errorThrown);
-                        }
-                    });
+                    if($("#name").val()  && $("#email").val()  && $("#typesel").val()  && $("#phone").val()){
+                        $.ajax({
+                            type: "POST",
+                            url: "main.php",
+                            data: formData,
+                            dataType: "json",
+                            processData: false, 
+                            contentType: false, 
+                            success: function(response) { 
+                                window.alert(response.response); 
+                                console.log(response);
+                                window.location.href = 'index.html';
+                            },
+                            error: function(xhr, textStatus, errorThrown){
+                                alert("An error occurred: " + xhr.status + " " + xhr.statusText);
+                                console.error("Error:", xhr, textStatus, errorThrown);
+                            }
+                        });
+                    }else{
+                        alert("Please Fill the Form")
+                    }
                 }
             },
             error: function(error,xhr,status){

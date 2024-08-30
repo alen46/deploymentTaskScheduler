@@ -77,6 +77,9 @@ var url = getQueryParam('report');
         $("#form").html(datesel);
         $("#table").html(datetable);
         $("#datebtn").click(()=>{
+            if ($.fn.DataTable.isDataTable('#test')) {
+                $('#test').DataTable().destroy();
+            }
             if($("#from").val() == '' || $("#to").val() ==''){
                 alert("Select Dates")
             }
@@ -406,6 +409,9 @@ var url = getQueryParam('report');
         $("#form").html(psel);
         $("#table").html(ptbl);
         $("#pbtn").click(()=>{
+            if ($.fn.DataTable.isDataTable('#test')) {
+                $('#test').DataTable().destroy();
+            }
             if($("#psel").val() == null){
                 alert("select portal")
             }

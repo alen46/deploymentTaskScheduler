@@ -28,18 +28,31 @@
             </div>
         </nav>
     </header>
-    <div class="container" >
+    <div class="container" id="login">
         <h1>Login</h1>
-        <form onsubmit="" id="loginform">
-            <input type="text" name="Email" placeholder="Email" id="email">
+        <form id="loginform">
+            <input type="email" name="Email" placeholder="Email" id="email">
             <input type="password" name="password" placeholder="Password" id="password">
             <input type="submit" value="Login">
         </form>
         <br>
         <a href="register.html">Don't have an account? Register</a>
+        <br><br>
+        <a id="forgotlink">Forgot Password</a>
+    </div>
+    <div class="container" id="forgot">
+        <h1>Login</h1>
+        <form id="forgotform">
+            <input type="email" name="forgotemail" placeholder="Email" id="forgotemail">
+            <input type="submit" value="Submit">
+        </form>
+        <br>
+        <a id="loginlink">Back to Login</a>
+        <br><br>
     </div>
 </body>
 <script>
+    $("#forgot").hide()
     $(document).ready(function(){
     $.ajax({
             url: 'main.php?function=checklogin',
@@ -53,6 +66,43 @@
             error: function(xhr, status, error) {
                 console.error('Error fetching data:', error);
             }
+        });
+        $("#forgotlink").click(()=>{
+            $("#login").hide()
+            $("#forgot").show()
+        });
+        $("#loginlink").click(()=>{
+            $("#login").show()
+            $("#forgot").hide()
+        });
+        $("#forgotform").submit(function(e) {
+            e.preventDefault();
+            let email = $('#forgotemail').val();
+            $.ajax({
+                url: `main.php?function=emailcheck&email=${email}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data);
+                    if(data == 'ok'){
+                        $.ajax({
+                            url:'forgotpassword.php',
+                            type:'POST',
+                            data:{'email':$("#forgotemail").val()},
+                            success:function(){
+                                alert("Please check the Email")
+                                window.location.href = 'index.html';
+                            }
+                        })
+                    }else if(data == "xx"){
+                        alert("email not present in db")
+                    }
+                },
+                error: function(error,xhr,status){
+                    alert(error);
+                }
+            });
+            return false; 
         });
     });
 </script>

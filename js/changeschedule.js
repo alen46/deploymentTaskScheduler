@@ -89,6 +89,7 @@ $(document).ready(function(){
     });
 
     $('#changeschedule').on('submit', function(e) {
+        
         e.preventDefault(e); 
         let formData = new FormData(this);
         formData.append('function',"changeschedule");
