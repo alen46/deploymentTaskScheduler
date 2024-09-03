@@ -20,7 +20,7 @@
                 $weekdayarr[] = $weekDay;
                 $stdate->modify('+1 day');
             }
-            //echo $weekDay;
+            // echo $weekDay;
             // Set the number of days to be added in case of weekend if 'Saturday' and 'Sunday' add 2 days
             $pday = 0;
             if(in_array('Saturday', $weekdayarr) && in_array('Sunday', $weekdayarr)){
