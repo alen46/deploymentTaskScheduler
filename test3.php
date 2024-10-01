@@ -178,6 +178,14 @@ $formattedTime = $timenow->format('H_i_s');
 // Set the filename for the output Excel file
 $filename =htmlspecialchars( 'reports/report'.$formattedDate.'__'.$formattedTime.'.xlsx');
 
+include_once 'main.php';
+try{
+    $obj = new Deployment();
+    $obj->useractionlog('report generation');
+}catch(Exception $e){
+    echo json_encode(array(''=> $e->getMessage()));
+}
+
 // Save the generated Excel file
 $writer->save($filename);
 echo json_encode(array('file'=> $filename));

@@ -5,10 +5,10 @@ $(document).ready(function(){
         dataType: 'json',
         success: function(response) {
             if(response.type == '102'){
-                $("#card5, #card6, #card7, #card8, #card10").hide();
+                $("#card5, #card6, #card7, #card8, #card10, #useractionlog").hide();
             }
             else if(response.type == '101' ){
-                $("#card1, #card2, #card3, #card4, #card5, #card8, #card7, #card10").hide();
+                $("#card1, #card2, #card3, #card4, #card5, #card8, #card7, #card10, #useractionlog").hide();
                 $("#card6").show();
             }else if(response.type == '100' ){
                 $("#card4").hide();
@@ -36,6 +36,7 @@ $(document).ready(function(){
             }else{
                 $("#login").text("Login").attr("href", "login.html");
                 $("#notificationimg").hide();
+                $("#useractionlog").hide();
                 $("#cards").hide()
             }
         },

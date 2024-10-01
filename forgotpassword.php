@@ -20,10 +20,10 @@ $mail = new PHPMailer(true);
 
 try {
     $mail->isSMTP();
-    $mail->Host = 'smtp-relay.brevo.com';
+    $mail->Host = 'smtp.gmail.com';
     $mail->SMTPAuth = true;
-    $mail->Username = '684edf001@smtp-brevo.com'; 
-    $mail->Password = 'GV07d5QNCBJhIEnb'; 
+    $mail->Username = 'alen.maxwellgs@gmail.com'; 
+    $mail->Password = 'zfyppejbyqoonfzo'; 
     $mail->SMTPSecure = 'PHPMailer::ENCRYPTION_STARTTLS';
     $mail->Port = 587;
 

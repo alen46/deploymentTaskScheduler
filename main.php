@@ -1,9 +1,10 @@
 <?php 
+//Admin@123
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 class Deployment{
-    public function checklogin(){
+    public function checklogin(): void{
         /**
          * check whether the user is logged in
          * 
@@ -62,6 +63,7 @@ class Deployment{
             if (session_status() == PHP_SESSION_NONE) {
                 session_start();
             }
+            self::useractionlog(fun: 'logout');
             session_destroy();
             $_SESSION = array();
             echo json_encode(array("response"=> "Logged Out Successfully"));
@@ -190,6 +192,7 @@ class Deployment{
             $stmt->bindParam(":userid", $_SESSION['userid']);
             $stmt->bindParam(':password',$password);
             $stmt->execute();
+            self::useractionlog('change password');
             echo json_encode(array("response" =>"Password Changed successfully"));
         }catch (PDOException $e) {
             echo json_encode(array("response" => "Database error: " . $e->getMessage()));
@@ -228,6 +231,7 @@ class Deployment{
                 $sql->bindParam(':usertype',$usertype);
                 $sql->execute();
                 require_once 'registermail.php';
+                self::useractionlog('added user '.$name);
                 echo json_encode(array("response" =>$name." inserted successfully"));
             }
             else{
@@ -268,6 +272,7 @@ class Deployment{
                     $_SESSION['type'] = $user['type'];
                     $_SESSION['userid'] = $user['userid'];
                     $welcome = "Welcome ".$user['username'];
+                    self::useractionlog('login');
                     echo json_encode(array("response" =>$welcome));
                 } else {
                     echo json_encode(array("response" =>"Email or Password Incorrect"));
@@ -308,6 +313,7 @@ class Deployment{
                     $sql->bindParam(':portal_version',$portal_version);
                     $sql->bindParam(':portal_features',$portal_features);
                     $sql->execute();
+                    self::useractionlog('add portal '.$portal_name);
                     echo json_encode(array("response" =>$portal_name." Portal Inserted Successfully"));
                 }else{
                     echo json_encode(array("response" =>"No Data Recieved"));
@@ -359,6 +365,7 @@ class Deployment{
                             $sql->bindParam(':deployment_note',$deployment_note);
                             $sql->bindParam(':deployment_plan',$uploadFile);
                             $sql->execute();
+                            self::useractionlog('added deployment '.$portal_url);
                             echo json_encode(array("response" =>"Deployment Details Added Successfully"));
                     } else {
                         echo json_encode(array("response"=>"File Error"));
@@ -399,6 +406,7 @@ class Deployment{
                 $sql->bindParam(':userid',$userid);
                 $sql->bindParam(':change_note',$change_note);
                 $sql->execute();
+                self::useractionlog('schedule change request');
                 echo json_encode(array("response" =>"Schedule Change Added Successfully"));
             }
             else{
@@ -521,6 +529,7 @@ class Deployment{
             $stmt2->bindParam(":pfeatures", $_POST['portal_features']);
             $stmt2->bindParam(":pid", $_POST['portal_id']);
             $stmt2->execute();
+            self::useractionlog(fun: 'admin edit portal '.$_POST['portal_name']);
         }catch(PDOException $e) {
             echo "Connection failed: " . $e->getMessage();
         }finally {
@@ -533,9 +542,18 @@ class Deployment{
          * Returns the data for datatable displaying the portal details
          */
         require('conn.php');
+        session_start();
         try {
-            $sql = "SELECT portal.purl, portal.portalname,deployment.deployment_date, users.username, deployment.required_days , deployment.deployment_id FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users on portal.portal_owner = users.userid order by deployment_date";
-            $stmt = $conn->prepare($sql);
+            if($_SESSION['type'] == 'admin'){
+                $sql = "SELECT portal.purl, portal.portalname,deployment.deployment_date, users.username, deployment.required_days , deployment.deployment_id FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users on portal.portal_owner = users.userid order by deployment_date";
+                $stmt = $conn->prepare($sql);
+
+            }else{
+                $sql = "SELECT portal.purl, portal.portalname,deployment.deployment_date, users.username, deployment.required_days , deployment.deployment_id FROM `deployment` INNER JOIN portal ON deployment.portal_id = portal.pid INNER JOIN users on portal.portal_owner = users.userid where portal.portal_owner = :usr order by deployment_date";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(':usr',$_SESSION['userid']);
+            }
+            
             $stmt->execute();
             $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if (!empty($data)) {
@@ -565,6 +583,7 @@ class Deployment{
             }
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":purl", $_GET['purl']);
+            self::useractionlog('view details '.$_GET['purl']);
             $stmt->execute();
             $details = $stmt->fetch(PDO::FETCH_ASSOC);
                 echo json_encode($details);
@@ -589,6 +608,7 @@ class Deployment{
             $stmt->bindParam(":status", $_POST['status']);
             $stmt->bindParam(":deployment_id", $_POST['deployment_id']);
             $stmt->execute();
+            self::useractionlog('admin accept deployment '.$_POST['deployment_id']);
             echo json_encode(array("response" => "Success"));
         }catch (PDOException $e) {
             echo json_encode(array("response" => "Database error: " . $e->getMessage()));
@@ -704,6 +724,7 @@ class Deployment{
             $stmt->bindParam(":type", $_POST['type']);
             $stmt->bindParam(":id", $_POST['id']);
             $stmt->execute();
+            self::useractionlog('edit user '.$_POST['name']);
             echo json_encode(array("message" => "Data Updated"));
         }catch (PDOException $e) {
             echo json_encode(array("response" => "Database error: " . $e->getMessage()));
@@ -730,6 +751,79 @@ class Deployment{
                 echo json_encode("ok");
             } else {
                 echo json_encode("xx");
+            }
+        } catch(PDOException $e) {
+            echo json_encode(array("message" =>"Connection failed: " . $e->getMessage()));
+        }finally {
+            $conn = null;
+        }
+    }
+
+    public function pcheck(){
+        /**
+         * Check whether a particular email is present in the database
+         */
+        require('conn.php');
+        try {
+            $sql = "SELECT portalname,purl from portal where portalname = :portalname";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":portalname", $_POST["portal_name"]);
+            $stmt->execute();
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $flag = 1;
+            if (!empty($data)) {
+                header('Content-Type: application/json');
+                echo json_encode("ok");
+                $flag = 0;
+            }else{
+                $sql1 = "SELECT portalname,purl from portal where purl = :purl";
+                $stmt1 = $conn->prepare($sql1);
+                $stmt1->bindParam(":purl", $_POST["portal_url"]);
+                $stmt1->execute();
+                $data1 = $stmt1->fetchAll(PDO::FETCH_ASSOC);
+                if (!empty($data1)) {
+                    header('Content-Type: application/json');
+                    echo json_encode("ok2");
+                    $flag = 0;
+                }
+            } 
+            if($flag == 1) {
+                echo json_encode("xx");
+            }
+        } catch(PDOException $e) {
+            echo json_encode(array("message" =>"Connection failed: " . $e->getMessage()));
+        }finally {
+            $conn = null;
+        }
+    }
+
+
+    public function useractionlog($fun){
+        require("conn.php");
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        $stmt = $conn->prepare("INSERT INTO useractionlog(userid, action, datetime) VALUES (:user,:action,CURRENT_TIMESTAMP)");
+        $stmt->bindParam(":user", $_SESSION['userid']);
+        $stmt->bindParam(':action', $fun);
+        $stmt->execute();
+    }
+
+    public function userlog(){
+        /**
+         * Returns the data for datatable displaying the userlogs
+         */
+        require('conn.php');
+        try {
+            $sql = "SELECT users.username, useractionlog.action, useractionlog.datetime from users INNER JOIN useractionlog on users.userid = useractionlog.userid;";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if (!empty($data)) {
+                header('Content-Type: application/json');
+                echo json_encode($data);
+            } else {
+                echo json_encode(array("message" => "No data found"));
             }
         } catch(PDOException $e) {
             echo json_encode(array("message" =>"Connection failed: " . $e->getMessage()));

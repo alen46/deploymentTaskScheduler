@@ -255,7 +255,7 @@ table.dataTable td {
 }
 table.dataTable th.dt-left,
 table.dataTable td.dt-left {
-  text-align: left;
+  text-align: center;
 }
 table.dataTable th.dt-center,
 table.dataTable td.dt-center {
@@ -263,7 +263,7 @@ table.dataTable td.dt-center {
 }
 table.dataTable th.dt-right,
 table.dataTable td.dt-right {
-  text-align: right;
+  text-align: center;
 }
 table.dataTable th.dt-justify,
 table.dataTable td.dt-justify {
@@ -281,7 +281,7 @@ table.dataTable td.dt-empty {
 table.dataTable th.dt-type-numeric, table.dataTable th.dt-type-date,
 table.dataTable td.dt-type-numeric,
 table.dataTable td.dt-type-date {
-  text-align: right;
+  text-align: center;
 }
 table.dataTable thead th,
 table.dataTable thead td,
@@ -305,7 +305,7 @@ table.dataTable thead th.dt-head-right,
 table.dataTable thead td.dt-head-right,
 table.dataTable tfoot th.dt-head-right,
 table.dataTable tfoot td.dt-head-right {
-  text-align: right;
+  text-align: center;
 }
 table.dataTable thead th.dt-head-justify,
 table.dataTable thead td.dt-head-justify,
@@ -329,7 +329,7 @@ table.dataTable tbody td.dt-body-center {
 }
 table.dataTable tbody th.dt-body-right,
 table.dataTable tbody td.dt-body-right {
-  text-align: right;
+  text-align: center;
 }
 table.dataTable tbody th.dt-body-justify,
 table.dataTable tbody td.dt-body-justify {
@@ -777,7 +777,7 @@ html.dark .dt-container .dt-paging .dt-paging-button:active {
 *[dir=rtl] table.dataTable thead td,
 *[dir=rtl] table.dataTable tfoot th,
 *[dir=rtl] table.dataTable tfoot td {
-  text-align: right;
+  text-align: center;
 }
 *[dir=rtl] table.dataTable th.dt-type-numeric, *[dir=rtl] table.dataTable th.dt-type-date,
 *[dir=rtl] table.dataTable td.dt-type-numeric,
@@ -785,7 +785,7 @@ html.dark .dt-container .dt-paging .dt-paging-button:active {
   text-align: left;
 }
 *[dir=rtl] div.dt-container div.dt-layout-cell.dt-start {
-  text-align: right;
+  text-align: center;
 }
 *[dir=rtl] div.dt-container div.dt-layout-cell.dt-end {
   text-align: left;
